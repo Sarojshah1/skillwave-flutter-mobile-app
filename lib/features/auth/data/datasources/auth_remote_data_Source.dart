@@ -56,11 +56,13 @@ class AuthRemoteDataSource {
 
   Future<Either<ApiFailure, bool>> userLogin(LogInModel loginModel) async {
     try {
+      print(loginModel.toJson());
       final response = await dio.post(
         ApiEndpoints.login,
         data: loginModel.toJson(),
       );
-
+      print(response);
+      print("hello from auth datasource");
       if (response.statusCode == 200) {
         final token = response.data['token'];
         final role = response.data['role'];

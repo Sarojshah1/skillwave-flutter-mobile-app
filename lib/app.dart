@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillwave/features/welcomescreens/presentation/screens/splash_Screen.dart';
 
 import 'config/di/di.container.dart';
@@ -26,6 +27,8 @@ class SkillWaveApp extends StatelessWidget {
             BlocProvider<SplashBloc>(
               create: (_) => getIt<SplashBloc>()..add(CheckAppStatusEvent()),
             ),
+            BlocProvider<AuthBloc>(
+              create: (_) => getIt<AuthBloc>()),
 
           ],
           child: MaterialApp(
