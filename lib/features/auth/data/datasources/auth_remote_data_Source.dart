@@ -6,20 +6,21 @@ import 'package:injectable/injectable.dart';
 import 'package:skillwave/config/constants/api_endpoints.dart';
 import 'package:skillwave/cores/failure/failure.dart';
 import 'package:skillwave/cores/shared_prefs/user_shared_prefs.dart';
+import 'package:skillwave/features/auth/data/models/login/login_model_params.dart';
 import 'package:skillwave/features/auth/domian/entity/sign_up_entity.dart';
 
 
 @LazySingleton()
-class UserRemoteDataSource {
+class AuthRemoteDataSource {
   final Dio dio;
   final UserSharedPrefs userSharedPrefs;
 
-  UserRemoteDataSource({
+  AuthRemoteDataSource({
     required this.dio,
     required this.userSharedPrefs,
   });
 
-  Future<Either<Failure, bool>> createUser(SignUpEntity user, File? profilePicture) async {
+  Future<Either<ApiFailure, bool>> createUser(SignUpEntity user, File? profilePicture) async {
     try {
       final formData = FormData.fromMap({
         'name': user.name,
@@ -53,14 +54,11 @@ class UserRemoteDataSource {
     }
   }
 
-  Future<Either<Failure, bool>> userLogin({required String email, required String password}) async {
+  Future<Either<ApiFailure, bool>> userLogin(LogInModel loginModel) async {
     try {
       final response = await dio.post(
         ApiEndpoints.login,
-        data: {
-          'email': email,
-          'password': password,
-        },
+        data: loginModel.toJson(),
       );
 
       if (response.statusCode == 200) {
