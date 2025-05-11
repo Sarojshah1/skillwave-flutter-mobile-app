@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:skillwave/config/themes/app_themes.dart';
 import 'package:skillwave/features/auth/domian/entity/login_entity.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 
@@ -158,9 +159,10 @@ class _LoginFormState extends State<LoginForm> {
                   children: [
                     Text("Don’t have an account? ", style: TextStyle(color: Colors.grey.shade600, fontSize: 16.sp)),
                     CustomTextLink(
+                      color: SkillWaveAppColors.primary,
                       text: "Sign Up",
                       onTap: () {
-                        // Navigate to sign up screen
+                        //todo: Navigate to sign up screen
                       },
                     ),
                   ],

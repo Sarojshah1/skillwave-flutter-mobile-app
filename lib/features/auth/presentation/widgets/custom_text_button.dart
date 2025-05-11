@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTextLink extends StatelessWidget {
   final String text;
@@ -21,6 +22,8 @@ class CustomTextLink extends StatelessWidget {
         style: TextStyle(
           color: color,
           decoration: TextDecoration.underline,
+          fontWeight: FontWeight.w800,
+          fontSize: 16.sp
         ),
       ),
     );

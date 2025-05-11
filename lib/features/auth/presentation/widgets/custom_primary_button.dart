@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:skillwave/config/themes/app_themes.dart';
 
 class CustomPrimaryButton extends StatelessWidget {
   final String text;
@@ -29,10 +30,10 @@ class CustomPrimaryButton extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         padding: EdgeInsets.all(8.0.sp),
-        child: Icon(icon, color: Colors.blue),
+        child: Icon(icon,size: 22.sp,weight: 20.sp, color: SkillWaveAppColors.primary),
       ),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: SkillWaveAppColors.primary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0.r)),
         padding: EdgeInsets.symmetric(horizontal: 80.w, vertical: 12.h),
       ),
