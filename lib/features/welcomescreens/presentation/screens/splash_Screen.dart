@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:skillwave/config/constants/app_assets.dart';
 import 'package:skillwave/config/themes/app_themes.dart';
+import 'package:skillwave/features/auth/presentation/screens/login_view.dart';
 import 'package:skillwave/features/welcomescreens/presentation/bloc/splashBloc/splash_bloc.dart';
 import 'package:skillwave/features/welcomescreens/presentation/screens/onboarding_Screen.dart';
 
@@ -22,13 +23,30 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
   }
 
   void navigate(BuildContext context, SplashState state) {
-    if (state is SplashNavigateToOnboarding || state is SplashNavigateToLogin) {
+    if (state is SplashNavigateToOnboarding) {
       Future.delayed(const Duration(seconds: 3), () {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const OnboardingView()),
         );
       });
+    }else if(state is SplashNavigateToLogin){
+      Future.delayed(const Duration(seconds: 3), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => LoginView()),
+        );
+      });
+
+    }else if(state is SplashNavigateToHome){
+      // after creating home screen navigate to home screen
+      Future.delayed(const Duration(seconds: 3), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => LoginView()),
+        );
+      });
+
     }
   }
 

@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:skillwave/config/constants/app_assets.dart';
 import 'package:skillwave/config/themes/app_themes.dart';
 import 'package:skillwave/cores/shared_prefs/app_shared_prefs.dart';
+import 'package:skillwave/features/auth/presentation/screens/login_view.dart';
 import 'package:skillwave/features/welcomescreens/presentation/bloc/obBoardingBloc/onboarding_cubit.dart';
 
 
@@ -112,15 +113,14 @@ class OnboardingScreen extends StatelessWidget {
                     ElevatedButton.icon(
                       onPressed: () {
                         if (context.read<OnboardingCubit>().isLastPage()) {
-                          // Set first-time user to false
                           final appSharedPrefs = GetIt.I<AppSharedPrefs>();
                           appSharedPrefs.setFirstTime(false);
 
                           // Navigate to login screen
-                          // Navigator.pushReplacement(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => LoginView()),
-                          // );
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => LoginView()),
+                          );
                         } else {
                           context.read<OnboardingCubit>().nextPage();
                         }

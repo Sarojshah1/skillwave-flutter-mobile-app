@@ -8,10 +8,10 @@ class OnboardingCubit extends Cubit<int> {
   }
 
   void skipOnboarding() {
-    emit(3); // Skip directly to last page
+    emit(3);
   }
 
   bool isLastPage() {
-    return state == 3; // Assuming 4 pages
+    return state == 3;
   }
 }

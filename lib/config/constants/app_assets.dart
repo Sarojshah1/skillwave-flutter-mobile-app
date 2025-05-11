@@ -11,5 +11,6 @@ abstract final class SkillWaveAppAssets{
   static const onboarding3='assets/images/onboarding3.png';
   static const onboarding4='assets/images/onboarding4.png';
   static const onboarding5='assets/images/onboarding5.png';
+  static const user="assets/images/profile.jpg";
 
 }
