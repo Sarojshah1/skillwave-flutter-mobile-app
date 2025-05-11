@@ -9,6 +9,7 @@ class CustomTextField extends StatelessWidget {
   final VoidCallback? onToggleObscureText;
   final String? Function(String?)? validator;
   final IconData prefixIcon;
+  final int maxLines;
 
   const CustomTextField({
     super.key,
@@ -19,6 +20,7 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     this.onToggleObscureText,
     this.validator,
+    this.maxLines = 1,
   });
 
   @override
@@ -27,11 +29,15 @@ class CustomTextField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
+      maxLines: maxLines,
       decoration: InputDecoration(
         hintText: hintText,
         filled: true,
         fillColor: isDarkMode ? Colors.white54 : Colors.grey.shade200,
-        prefixIcon: Icon(prefixIcon, color: isDarkMode ? Colors.black38 : Colors.grey.shade600),
+        prefixIcon: Icon(
+          prefixIcon,
+          color: isDarkMode ? Colors.black38 : Colors.grey.shade600,
+        ),
         suffixIcon: isPassword
             ? IconButton(
           icon: Icon(
