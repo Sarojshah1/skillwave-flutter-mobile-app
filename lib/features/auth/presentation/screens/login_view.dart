@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:skillwave/config/themes/app_themes.dart';
 import 'package:skillwave/features/auth/domian/entity/login_entity.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillwave/features/auth/presentation/widgets/loading_overlay.dart';
@@ -44,8 +46,46 @@ class _LoginViewState extends State<LoginView> {
         },
         child: Stack(
           children: [
-            LoginForm(),
-            LoadingOverlay()
+            CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  backgroundColor: SkillWaveAppColors.primary,
+                  expandedHeight: 140,
+                  pinned: true,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      bottom: Radius.circular(24),
+                    ),
+                  ),
+                  leading: Padding(
+                    padding: EdgeInsets.only(left: 8.w, top: 8.h),
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                  flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: true,
+                    titlePadding: const EdgeInsets.only(bottom: 20),
+                    title: Text(
+                      "Login",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                    child: LoginForm(),
+                  ),
+                ),
+              ],
+            ),
+            const LoadingOverlay(),
           ],
         ),
       ),

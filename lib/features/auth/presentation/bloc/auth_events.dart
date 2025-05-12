@@ -25,3 +25,11 @@ class LogInRequested extends AuthEvent {
   @override
   List<Object?> get props => [entity];
 }
+
+class SendOtpEvent extends AuthEvent{
+  final String email;
+  const SendOtpEvent({required this.email});
+  @override
+  List<Object?> get props =>[email];
+
+}

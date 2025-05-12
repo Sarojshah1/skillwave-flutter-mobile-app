@@ -79,8 +79,11 @@ class AuthRemoteDataSource {
   }
   Future<Either<ApiFailure,String>> sendOtp(String email)async{
     try{
+      print("sendotp data source");
       Response response=await dio.post(ApiEndpoints.sendOtp,data: {'email':email});
+      print(response);
       if(response.statusCode==200){
+
 
         String message=response.data;
         return right(message);
