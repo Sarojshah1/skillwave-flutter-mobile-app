@@ -8,6 +8,7 @@ import 'package:skillwave/cores/network/models/skillwave_response.dart';
 import 'package:skillwave/features/auth/domian/entity/login_entity.dart';
 import 'package:skillwave/features/auth/domian/entity/sign_up_entity.dart';
 import 'package:skillwave/features/auth/domian/usecases/create_user_usecase.dart';
+import 'package:skillwave/features/auth/domian/usecases/forget_password_usecase.dart';
 import 'package:skillwave/features/auth/domian/usecases/login_usecase.dart';
 import 'package:skillwave/features/auth/domian/usecases/send_oto_usecase.dart';
 import 'package:skillwave/features/auth/domian/usecases/verify_otp_usecase.dart';
@@ -21,17 +22,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LogInUseCase _logInUseCase;
   final SendOtpUseCase _otpUseCase;
   final VerifyOtpUseCase _verifyOtpUseCase;
+  final ForgetPasswordUseCase _forgetPasswordUseCase;
 
   AuthBloc(
     this._createUserUseCase,
     this._logInUseCase,
     this._otpUseCase,
     this._verifyOtpUseCase,
+    this._forgetPasswordUseCase,
   ) : super(AuthInitial()) {
     on<SignUpRequested>(_onSignUpRequested);
     on<LogInRequested>(_onLogInRequested);
     on<SendOtpEvent>(_onSendOtpEvent);
     on<VerifyOtpEvent>(_onVerifyOtpEvent);
+    on<ResetPasswordEvent>(_onResetPasswordEvent);
   }
 
   Future<void> _onSignUpRequested(
@@ -91,6 +95,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       result.fold(
         (failure) => AuthFailure(message: failure.message),
         (success) => VerifyOtpState(messgae: success!),
+      ),
+    );
+  }
+
+  Future<void> _onResetPasswordEvent(
+    ResetPasswordEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    final result = await _forgetPasswordUseCase.call(
+      event.password,
+      event.email,
+    );
+    emit(
+      result.fold(
+        (failure) => AuthFailure(message: failure.message),
+        (success) => ForgetPasswordState(messgae: success!),
       ),
     );
   }
