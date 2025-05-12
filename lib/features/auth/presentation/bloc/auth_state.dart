@@ -29,6 +29,27 @@ class SignupSuccess extends AuthState {
   List<Object?> get props => [isRegistered];
 }
 
+class SendOtpState extends AuthState{
+  final String messgae;
+  const SendOtpState({required this.messgae});
+  @override
+  List<Object?> get props =>[messgae];
+}
+
+class VerifyOtpState extends AuthState{
+  final String messgae;
+  const VerifyOtpState({required this.messgae});
+  @override
+  List<Object?> get props =>[messgae];
+}
+
+class ForgetPasswordState extends AuthState{
+  final String messgae;
+  const ForgetPasswordState({required this.messgae});
+  @override
+  List<Object?> get props =>[messgae];
+}
+
 class AuthFailure extends AuthState {
   final String message;
 

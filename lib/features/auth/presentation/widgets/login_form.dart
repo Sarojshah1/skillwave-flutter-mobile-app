@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skillwave/config/themes/app_themes.dart';
 import 'package:skillwave/features/auth/domian/entity/login_entity.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:skillwave/features/auth/presentation/screens/send_otp_screen.dart';
 import 'package:skillwave/features/auth/presentation/screens/signup_view.dart';
 
 import 'custom_primary_button.dart';
@@ -111,7 +112,7 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                   TextButton(
                     onPressed: () {
-                      //todo: Navigate to forget password screen
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SendOtpScreen(),));
                     },
                     child: Text("Forgot Password?", style: TextStyle(color: Colors.grey.shade600)),
                   ),
@@ -163,7 +164,6 @@ class _LoginFormState extends State<LoginForm> {
                       color: SkillWaveAppColors.primary,
                       text: "Sign Up",
                       onTap: () {
-                        //todo: Navigate to sign up screen
                         Navigator.push(context, MaterialPageRoute(builder: (context) => SignupView(),));
                       },
                     ),
