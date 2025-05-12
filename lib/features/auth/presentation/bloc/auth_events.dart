@@ -33,3 +33,11 @@ class SendOtpEvent extends AuthEvent{
   List<Object?> get props =>[email];
 
 }
+class VerifyOtpEvent extends AuthEvent{
+  final String email;
+  final String otp;
+  const VerifyOtpEvent({required this.email,required,required this.otp});
+@override
+List<Object?> get props =>[email,otp];
+
+}
