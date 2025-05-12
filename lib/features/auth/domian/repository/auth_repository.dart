@@ -8,4 +8,7 @@ import 'package:skillwave/features/auth/domian/entity/sign_up_entity.dart';
 abstract class AuthRepository{
   Future<Either<ApiFailure, bool>> createUser(SignUpEntity user, File? profilePicture);
   Future<Either<ApiFailure, bool>> userLogin(LogInModel loginModel);
+  Future<Either<ApiFailure,String>> sendOtp(String email);
+  Future<Either<ApiFailure,String>> verifyOtp(String otp,String email);
+  Future<Either<ApiFailure,String>> forgetPassword(String password,String email);
 }

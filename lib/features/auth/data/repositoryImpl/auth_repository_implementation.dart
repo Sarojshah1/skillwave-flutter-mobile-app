@@ -14,14 +14,31 @@ class IAuthRepository implements AuthRepository{
   final AuthRemoteDataSource dataSource;
   IAuthRepository({required this.dataSource});
   @override
-  Future<Either<ApiFailure, bool>> createUser(SignUpEntity user, File? profilePicture) {
-    return dataSource.createUser(user, profilePicture);
+  Future<Either<ApiFailure, bool>> createUser(SignUpEntity user, File? profilePicture) async{
+    return await dataSource.createUser(user, profilePicture);
   }
 
   @override
-  Future<Either<ApiFailure, bool>> userLogin(LogInModel loginModel) {
+  Future<Either<ApiFailure, bool>> userLogin(LogInModel loginModel) async{
     print("login repo");
-    return dataSource.userLogin(loginModel);
+    return await dataSource.userLogin(loginModel);
+  }
+
+  @override
+  Future<Either<ApiFailure, String>> forgetPassword(String password, String email) async{
+   return await dataSource.forgetPassword(password, email);
+  }
+
+  @override
+  Future<Either<ApiFailure, String>> sendOtp(String email) async{
+    return await dataSource.sendOtp(email);
+
+  }
+
+  @override
+  Future<Either<ApiFailure, String>> verifyOtp(String otp, String email) async{
+
+    return await dataSource.verifyOtp(otp, email);
   }
 
 }

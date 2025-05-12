@@ -77,4 +77,53 @@ class AuthRemoteDataSource {
       return Left(ApiFailure(message: e.message.toString()));
     }
   }
+  Future<Either<ApiFailure,String>> sendOtp(String email)async{
+    try{
+      Response response=await dio.post(ApiEndpoints.sendOtp,data: {'email':email});
+      if(response.statusCode==200){
+
+        String message=response.data;
+        return right(message);
+
+      }else{
+        return left(ApiFailure(message: "failed to send otp please try again"));
+      }
+
+    }on DioException catch(e){
+      return left(ApiFailure(message: e.error.toString()));
+    }
+  }
+  Future<Either<ApiFailure,String>> verifyOtp(String otp,String email)async{
+    try{
+      Response response=await dio.post(ApiEndpoints.verifyOtp,data: {'email':email,'otp':otp});
+      if(response.statusCode==200){
+        String message=response.data['message'];
+        return right(message);
+
+      }else{
+        return left(ApiFailure(message: "failed to verify otp please try again"));
+      }
+
+    }on DioException catch(e){
+      return left(ApiFailure(message: e.error.toString()));
+    }
+  }
+  Future<Either<ApiFailure,String>> forgetPassword(String password,String email)async{
+    try{
+      Response response=await dio.put(ApiEndpoints.ForgetPassword,data: {'email':email,'newPassword':password});
+      print(response.data);
+      print(response.statusCode);
+      if(response.statusCode==200){
+        String message=response.data['message'];
+        return right(message);
+
+      }else{
+        return left(ApiFailure(message: "failed to update password please try again"));
+      }
+
+    }on DioException catch(e){
+      return left(ApiFailure(message: e.error.toString()));
+    }
+  }
+
 }
