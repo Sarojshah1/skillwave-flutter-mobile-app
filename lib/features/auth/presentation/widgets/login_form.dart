@@ -7,6 +7,7 @@ import 'package:skillwave/features/auth/domian/entity/login_entity.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillwave/features/auth/presentation/screens/send_otp_screen.dart';
 import 'package:skillwave/features/auth/presentation/screens/signup_view.dart';
+import 'package:skillwave/features/homeScreen/presentation/screens/home_view.dart';
 
 import 'custom_primary_button.dart';
 import 'custom_social_button.dart';
@@ -135,6 +136,11 @@ class _LoginFormState extends State<LoginForm> {
                           context.read<AuthBloc>().add(
                             LogInRequested(entity: LogInEntity(email: email, password: password)),
                           );
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (_) => HomeView()),
+                          );
+
                         }
                       },
                     );
