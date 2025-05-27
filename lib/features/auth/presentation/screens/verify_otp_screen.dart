@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skillwave/config/constants/app_assets.dart';
+import 'package:skillwave/config/routes/app_router.dart';
 import 'package:skillwave/config/themes/app_themes.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillwave/features/auth/presentation/screens/reset_password_Screen.dart';
@@ -47,7 +48,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
               backgroundColor: Colors.green,
             ),
           );
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ResetPasswordScreen(email: widget.email),));
+          context.router.replaceAll([ResetPasswordRoute(email: widget.email)]);
         }else if(state is AuthFailure){
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -129,7 +130,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                     Center(
                       child: TextButton(
                         onPressed: () {
-                          // Resend OTP logic
+                          context.read<AuthBloc>().add(SendOtpEvent(email: widget.email));
                         },
                         child: Text(
                           'Resend OTP',
