@@ -120,33 +120,42 @@ class _LoginFormState extends State<LoginForm> {
                 ],
               ),
               SizedBox(height: 20.h),
-              Center(
-                child: BlocBuilder<AuthBloc, AuthState>(
-                  builder: (context, state) {
-                    final isLoading = state is AuthLoading;
+              BlocConsumer<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is LoginSuccess) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => HomeView()),
+                    );
+                  } else if (state is AuthFailure) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(state.message)),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  final isLoading = state is AuthLoading;
 
-                    return CustomPrimaryButton(
+                  return Center(
+                    child: CustomPrimaryButton(
                       text: "Sign In",
                       icon: Icons.arrow_forward_outlined,
                       isLoading: isLoading,
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          final email = _emailController.text;
-                          final password = _passwordController.text;
+                          final email = _emailController.text.trim();
+                          final password = _passwordController.text.trim();
+
                           context.read<AuthBloc>().add(
                             LogInRequested(entity: LogInEntity(email: email, password: password)),
                           );
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (_) => HomeView()),
-                          );
-
                         }
                       },
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
+
               SizedBox(height: 20.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
