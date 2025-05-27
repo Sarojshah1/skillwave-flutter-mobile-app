@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skillwave/config/constants/app_assets.dart';
 import 'package:skillwave/config/routes/app_router.dart';
-import 'package:skillwave/config/themes/app_themes.dart';
+import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/features/auth/domian/entity/sign_up_entity.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillwave/features/auth/presentation/widgets/custom_primary_button.dart';

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skillwave/config/routes/app_router.dart';
-import 'package:skillwave/config/themes/app_themes.dart';
+import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/cores/common/common_snackbar.dart';
 import 'package:skillwave/features/auth/domian/entity/login_entity.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';

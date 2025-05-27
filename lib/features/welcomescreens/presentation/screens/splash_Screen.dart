@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:skillwave/config/constants/app_assets.dart';
 import 'package:skillwave/config/routes/app_router.dart';
-import 'package:skillwave/config/themes/app_themes.dart';
+import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/features/auth/presentation/screens/login_view.dart';
 import 'package:skillwave/features/homeScreen/presentation/screens/home_view.dart';
 import 'package:skillwave/features/welcomescreens/presentation/bloc/splashBloc/splash_bloc.dart';
