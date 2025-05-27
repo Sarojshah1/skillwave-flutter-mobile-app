@@ -94,6 +94,11 @@ dependencies:
 
   pinput: ^5.0.1
 
+  lucide_icons: ^0.257.0
+
+#  routes dependency
+  auto_route: ^10.1.0
+
 
 
 dev_dependencies:
@@ -106,12 +111,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
-  build_runner: ^2.4.14
+  build_runner: ^2.4.15
   retrofit_generator: ^9.1.7
   injectable_generator: ^2.7.0
   json_serializable: ^6.9.3
   freezed: ^2.5.8
   flutter_launcher_icons: ^0.14.3
+  auto_route_generator: ^10.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

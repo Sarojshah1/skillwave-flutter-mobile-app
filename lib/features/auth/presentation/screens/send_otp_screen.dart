@@ -1,13 +1,17 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skillwave/config/constants/app_assets.dart';
-import 'package:skillwave/config/themes/app_themes.dart';
+import 'package:skillwave/config/routes/app_router.dart';
+import 'package:skillwave/config/themes/app_themes_color.dart';
+import 'package:skillwave/cores/common/common_snackbar.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillwave/features/auth/presentation/screens/verify_otp_screen.dart';
 import 'package:skillwave/features/auth/presentation/widgets/custom_primary_button.dart';
 import 'package:skillwave/features/auth/presentation/widgets/custom_text_field.dart';
 
+@RoutePage()
 class SendOtpScreen extends StatefulWidget {
   const SendOtpScreen({super.key});
 
@@ -40,20 +44,10 @@ class _SendOtpScreenState extends State<SendOtpScreen> {
           if (state is AuthLoading) {
             setState(() => _isLoading = state is AuthLoading);
           } else if (state is SendOtpState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.messgae),
-                backgroundColor: Colors.green,
-              ),
-            );
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => VerifyOtpScreen(email: _emailController.text),));
+            CommonSnackbar.show(context, message: state.messgae,title: "Success");
+            context.router.replaceAll([VerifyOtpRoute(email: _emailController.text)]);
           } else if (state is AuthFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Failed: ${state.message}"),
-                backgroundColor: Colors.red,
-              ),
-            );
+            CommonSnackbar.show(context, message: state.message,title: "Error",isError: true);
           }
         },
         child: Stack(
@@ -81,13 +75,6 @@ class _SendOtpScreenState extends State<SendOtpScreen> {
                       fontSize: 22.sp,
                       fontWeight: FontWeight.w600,
                     ),
-                  ),
-                ),
-                leading: Padding(
-                  padding: EdgeInsets.only(left: 8.w, top: 8.h),
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Navigator.pop(context),
                   ),
                 ),
               ),

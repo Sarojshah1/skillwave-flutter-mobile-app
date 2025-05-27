@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:injectable/injectable.dart';
 import 'package:skillwave/config/themes/app_text_styles.dart';
-import 'package:skillwave/config/themes/app_themes.dart';
+import 'package:skillwave/config/themes/app_themes_color.dart';
 
 
 enum SnackbarType { info, warning, success, error }

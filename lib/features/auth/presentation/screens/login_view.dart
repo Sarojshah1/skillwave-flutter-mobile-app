@@ -1,18 +1,24 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:skillwave/config/themes/app_themes.dart';
+import 'package:skillwave/config/routes/app_router.dart';
+import 'package:skillwave/config/themes/app_themes_color.dart';
+import 'package:skillwave/cores/common/common_snackbar.dart';
 import 'package:skillwave/features/auth/domian/entity/login_entity.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillwave/features/auth/presentation/widgets/loading_overlay.dart';
 import 'package:skillwave/features/auth/presentation/widgets/login_form.dart';
 
-
+@RoutePage()
 class LoginView extends StatefulWidget {
+  const LoginView({super.key});
+
   @override
   _LoginViewState createState() => _LoginViewState();
 }
+
 
 class _LoginViewState extends State<LoginView> {
   @override
@@ -25,23 +31,18 @@ class _LoginViewState extends State<LoginView> {
           if (state is AuthLoading) {
 
           } else if (state is LoginSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Login successful!'),
-                backgroundColor: Colors.green,
-              ),
-            );
-            // Navigator.pushReplacement(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => const HomeView()),
-            // );
+            CommonSnackbar.show(context,title: "Success", message: "Login successfull",isError: false);
+            context.replaceRoute(const HomeRoute());
+
           } else if (state is AuthFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Login failed: ${state.message}'),
-                backgroundColor: Colors.red,
-              ),
+            CommonSnackbar.show(
+              context,
+              title: "Error",
+              message: "Invalid credentials!",
+              isError: true,
             );
+
+
           }
         },
         child: Stack(
@@ -49,21 +50,16 @@ class _LoginViewState extends State<LoginView> {
             CustomScrollView(
               slivers: [
                 SliverAppBar(
+                  automaticallyImplyLeading: false,
                   backgroundColor: SkillWaveAppColors.primary,
-                  expandedHeight: 140,
+                  expandedHeight: 100,
                   pinned: true,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.vertical(
                       bottom: Radius.circular(24),
                     ),
                   ),
-                  leading: Padding(
-                    padding: EdgeInsets.only(left: 8.w, top: 8.h),
-                    child: IconButton(
-                      icon: Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ),
+
                   flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
                     titlePadding: const EdgeInsets.only(bottom: 20),

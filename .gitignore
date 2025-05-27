@@ -48,3 +48,4 @@ app.*.map.json
 *.g.dart
 *.freezed.dart
 di.container.config.dart
+app_router.gr.dart

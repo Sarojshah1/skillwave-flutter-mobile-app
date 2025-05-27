@@ -53,30 +53,50 @@ class AuthRemoteDataSource {
       return Left(ApiFailure(message: e.message.toString()));
     }
   }
-
   Future<Either<ApiFailure, bool>> userLogin(LogInModel loginModel) async {
     try {
-      print(loginModel.toJson());
+      print('Login Request: ${loginModel.toJson()}');
+
       final response = await dio.post(
         ApiEndpoints.login,
         data: loginModel.toJson(),
       );
-      print(response);
-      print("hello from auth datasource");
-      if (response.statusCode == 200) {
-        final token = response.data['token'];
-        final role = response.data['role'];
-        final id = response.data['id'];
-        await userSharedPrefs.setUserToken(token);
-        await userSharedPrefs.setUserRole(role);
-        await userSharedPrefs.setUserId(id);
-      }
 
-      return const Right(true);
+      print('Login Response: ${response.statusMessage}');
+      print("hello from auth datasource");
+
+      if (response.statusCode == 200 && response.data != null) {
+        final data = response.data;
+
+        // Validate response structure
+        if (data.containsKey('token') && data.containsKey('role') && data.containsKey('id')) {
+          final token = data['token'];
+          final role = data['role'];
+          final id = data['id'];
+
+          await userSharedPrefs.setUserToken(token);
+          await userSharedPrefs.setUserRole(role);
+          await userSharedPrefs.setUserId(id);
+
+          return const Right(true);
+        } else {
+          print( "Login failed: ${response.statusCode ?? 'Unknown error'}");
+          return const Left(ApiFailure(message: "Missing fields in response"));
+        }
+      } else {
+        print( "Login failed: ${response.statusCode ?? 'Unknown error'}");
+        return Left(ApiFailure(
+          message: "Login failed: ${response.statusMessage ?? 'Unknown error'}",
+        ));
+      }
     } on DioException catch (e) {
-      return Left(ApiFailure(message: e.message.toString()));
+      print( "Login failed: ${e.response!.data}");
+      return Left(ApiFailure(message: e.response!.data['message']));
+    } catch (e) {
+      return Left(ApiFailure(message: "Unexpected error: ${e.toString()}"));
     }
   }
+
   Future<Either<ApiFailure,String>> sendOtp(String email)async{
     try{
       print("sendotp data source");

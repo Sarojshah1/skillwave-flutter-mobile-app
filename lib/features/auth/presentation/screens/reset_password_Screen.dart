@@ -1,12 +1,15 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skillwave/config/constants/app_assets.dart';
-import 'package:skillwave/config/themes/app_themes.dart';
+import 'package:skillwave/config/themes/app_themes_color.dart';
+import 'package:skillwave/cores/common/common_snackbar.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillwave/features/auth/presentation/widgets/custom_primary_button.dart';
 import 'package:skillwave/features/auth/presentation/widgets/custom_text_field.dart';
 
+@RoutePage()
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key, required this.email});
   final String email;
@@ -60,10 +63,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           }
 
           if (state is ForgetPasswordState) {
-            _showSnackBar(state.messgae);
+            CommonSnackbar.show(context, message: state.messgae,title: "Success");
             Navigator.pop(context);
           } else if (state is AuthFailure) {
-            _showSnackBar(state.message);
+            CommonSnackbar.show(context, message: state.message,title: "Error",isError: true);
           }
         },
         builder: (context, state) {
@@ -91,13 +94,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       fontSize: 22.sp,
                       fontWeight: FontWeight.w600,
                     ),
-                  ),
-                ),
-                leading: Padding(
-                  padding: EdgeInsets.only(left: 8.w, top: 8.h),
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Navigator.pop(context),
                   ),
                 ),
               ),

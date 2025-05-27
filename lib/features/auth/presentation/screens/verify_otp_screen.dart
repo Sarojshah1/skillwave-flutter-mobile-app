@@ -1,13 +1,16 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skillwave/config/constants/app_assets.dart';
-import 'package:skillwave/config/themes/app_themes.dart';
+import 'package:skillwave/config/routes/app_router.dart';
+import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillwave/features/auth/presentation/screens/reset_password_Screen.dart';
 import 'package:skillwave/features/auth/presentation/widgets/custom_primary_button.dart';
 
+@RoutePage()
 class VerifyOtpScreen extends StatefulWidget {
   const VerifyOtpScreen({super.key, required this.email});
 
@@ -45,7 +48,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
               backgroundColor: Colors.green,
             ),
           );
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ResetPasswordScreen(email: widget.email),));
+          context.router.replaceAll([ResetPasswordRoute(email: widget.email)]);
         }else if(state is AuthFailure){
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -80,13 +83,6 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                     fontSize: 22.sp,
                     fontWeight: FontWeight.w600,
                   ),
-                ),
-              ),
-              leading: Padding(
-                padding: EdgeInsets.only(left: 8.w, top: 8.h),
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () => Navigator.pop(context),
                 ),
               ),
             ),
@@ -134,7 +130,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                     Center(
                       child: TextButton(
                         onPressed: () {
-                          // Resend OTP logic
+                          context.read<AuthBloc>().add(SendOtpEvent(email: widget.email));
                         },
                         child: Text(
                           'Resend OTP',

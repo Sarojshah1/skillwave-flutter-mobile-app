@@ -1,12 +1,15 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:skillwave/config/themes/app_themes.dart';
+import 'package:skillwave/config/routes/app_router.dart';
+import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/features/auth/domian/entity/login_entity.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillwave/features/auth/presentation/screens/send_otp_screen.dart';
 import 'package:skillwave/features/auth/presentation/screens/signup_view.dart';
+import 'package:skillwave/features/homeScreen/presentation/screens/home_view.dart';
 
 import 'custom_primary_button.dart';
 import 'custom_social_button.dart';
@@ -112,35 +115,49 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SendOtpScreen(),));
+                      context.router.push(const SendOtpRoute());
                     },
                     child: Text("Forgot Password?", style: TextStyle(color: Colors.grey.shade600)),
                   ),
                 ],
               ),
               SizedBox(height: 20.h),
-              Center(
-                child: BlocBuilder<AuthBloc, AuthState>(
-                  builder: (context, state) {
-                    final isLoading = state is AuthLoading;
+              BlocConsumer<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is LoginSuccess) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => HomeView()),
+                    );
+                  } else if (state is AuthFailure) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(state.message)),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  final isLoading = state is AuthLoading;
 
-                    return CustomPrimaryButton(
+                  return Center(
+                    child: CustomPrimaryButton(
                       text: "Sign In",
                       icon: Icons.arrow_forward_outlined,
                       isLoading: isLoading,
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          final email = _emailController.text;
-                          final password = _passwordController.text;
+                          final email = _emailController.text.trim();
+                          final password = _passwordController.text.trim();
+
                           context.read<AuthBloc>().add(
                             LogInRequested(entity: LogInEntity(email: email, password: password)),
                           );
                         }
                       },
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
+
               SizedBox(height: 20.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -164,7 +181,7 @@ class _LoginFormState extends State<LoginForm> {
                       color: SkillWaveAppColors.primary,
                       text: "Sign Up",
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => SignupView(),));
+                        context.router.replaceAll([const SignupRoute()]);
                       },
                     ),
                   ],

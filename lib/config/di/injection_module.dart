@@ -18,4 +18,6 @@ abstract class InjectionModule {
   GlobalKey<NavigatorState> get navigatorKey => GlobalKey<NavigatorState>();
   @lazySingleton
   Dio get dio => Dio();
+
+
 }
