@@ -95,6 +95,7 @@ dependencies:
   pinput: ^5.0.1
 
   lucide_icons: ^0.257.0
+  skeletonizer: ^2.0.1
 
 #  routes dependency
   auto_route: ^10.1.0
