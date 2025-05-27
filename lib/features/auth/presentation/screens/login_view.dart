@@ -32,12 +32,8 @@ class _LoginViewState extends State<LoginView> {
 
           } else if (state is LoginSuccess) {
             CommonSnackbar.show(context,title: "Success", message: "Login successfull",isError: false);
-            context.router.replaceAll([const HomeRoute()]);
+            context.replaceRoute(const HomeRoute());
 
-            // Navigator.pushReplacement(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => const HomeView()),
-            // );
           } else if (state is AuthFailure) {
             CommonSnackbar.show(
               context,

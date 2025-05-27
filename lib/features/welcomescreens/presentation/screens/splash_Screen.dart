@@ -29,17 +29,17 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
   void navigate(BuildContext context, SplashState state) {
     if (state is SplashNavigateToOnboarding) {
       Future.delayed(const Duration(seconds: 3), () {
-        context.router.replaceAll([const OnboardingRoute()]);
+        context.replaceRoute(const OnboardingRoute());
       });
     }else if(state is SplashNavigateToLogin){
       Future.delayed(const Duration(seconds: 3), () {
-        context.router.replaceAll([const LoginRoute()]);
+        context.replaceRoute(const LoginRoute());
 
       });
 
     }else if(state is SplashNavigateToHome){
       Future.delayed(const Duration(seconds: 3), () {
-        context.router.replaceAll([const HomeRoute()]);
+        context.replaceRoute(const HomeRoute());
       });
 
     }

@@ -1,60 +1,38 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:skillwave/config/routes/app_router.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
+import 'package:skillwave/features/homeScreen/presentation/constants/bottom_nav_items.dart';
 
 @RoutePage()
-class HomeView extends StatefulWidget {
+class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
 
   @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
-  int _selectedIndex = 0;
-
-  final List<String> _pageTitles = [
-    'Dashboard',
-    'Courses',
-    'Blogs',
-    'Profile',
-    'Settings',
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text(
-          _pageTitles[_selectedIndex],
-          style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        elevation: 12,
-        currentIndex: _selectedIndex,
-        selectedItemColor: SkillWaveAppColors.primary,
-        unselectedItemColor: Colors.grey,
-        backgroundColor: Colors.white,
-
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Dashboard'),
-          BottomNavigationBarItem(icon: Icon(LucideIcons.bookOpenCheck), label: 'Courses'),
-          BottomNavigationBarItem(icon: Icon(Icons.book_online), label: 'Blogs'),
-          BottomNavigationBarItem(icon: Icon(LucideIcons.user), label: 'Profile'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
-        ],
-      ),
+    return AutoTabsScaffold(
+      animationDuration: const Duration(milliseconds: 250),
+      transitionBuilder: (context, child, animation) =>
+          FadeTransition(opacity: animation, child: child),
+      routes: const [
+        DashboardRoute(),
+        CoursesRoute(),
+        BlogsRoute(),
+        ProfileRoute(),
+        SettingsRoute(),
+      ],
+      bottomNavigationBuilder: (context, tabsRouter) {
+        return BottomNavigationBar(
+          currentIndex: tabsRouter.activeIndex,
+          onTap: tabsRouter.setActiveIndex,
+          selectedItemColor: SkillWaveAppColors.primary,
+          unselectedItemColor: SkillWaveAppColors.grey,
+          backgroundColor: Colors.white,
+          elevation: 8,
+          type: BottomNavigationBarType.fixed,
+          items: BottomNavItems.items,
+        );
+      },
     );
   }
-
 }
