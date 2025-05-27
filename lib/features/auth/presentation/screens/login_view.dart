@@ -50,7 +50,7 @@ class _LoginViewState extends State<LoginView> {
               slivers: [
                 SliverAppBar(
                   backgroundColor: SkillWaveAppColors.primary,
-                  expandedHeight: 140,
+                  expandedHeight: 100,
                   pinned: true,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.vertical(

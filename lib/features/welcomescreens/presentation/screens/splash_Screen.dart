@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:skillwave/config/constants/app_assets.dart';
 import 'package:skillwave/config/themes/app_themes.dart';
 import 'package:skillwave/features/auth/presentation/screens/login_view.dart';
+import 'package:skillwave/features/homeScreen/presentation/screens/home_view.dart';
 import 'package:skillwave/features/welcomescreens/presentation/bloc/splashBloc/splash_bloc.dart';
 import 'package:skillwave/features/welcomescreens/presentation/screens/onboarding_Screen.dart';
 
@@ -39,11 +40,10 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
       });
 
     }else if(state is SplashNavigateToHome){
-      // after creating home screen navigate to home screen
       Future.delayed(const Duration(seconds: 3), () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => LoginView()),
+          MaterialPageRoute(builder: (_) => HomeView()),
         );
       });
 
@@ -63,7 +63,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
             height: 400.h,
             fit: BoxFit.contain,
           )
-              .animate() // Begin animation
+              .animate()
               .fadeIn(duration: 1.5.seconds)
               .scale(duration: 1.5.seconds, curve: Curves.easeOutBack)
               .then(delay: 0.5.seconds)
