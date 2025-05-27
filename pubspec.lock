@@ -41,6 +41,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.12.0"
+  auto_route:
+    dependency: "direct main"
+    description:
+      name: auto_route
+      sha256: eae18fcd3e3762eb6074a3560c0f411d1e36bd9f8d3eed9c15ed1c577e8d1815
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.1.0"
+  auto_route_generator:
+    dependency: "direct dev"
+    description:
+      name: auto_route_generator
+      sha256: "9e3846fcbeacba5c362557328dd8c8fbc953b6a0cbc3395365e8d8f92eea29c4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.1.0"
   awesome_dialog:
     dependency: "direct main"
     description:
@@ -277,10 +293,10 @@ packages:
     dependency: transitive
     description:
       name: dart_style
-      sha256: "27eb0ae77836989a3bc541ce55595e8ceee0992807f14511552a898ddd0d88ac"
+      sha256: "5b236382b47ee411741447c1f1e111459c941ea1b3f2b540dde54c210a3662af"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.1"
+    version: "3.1.0"
   dartz:
     dependency: "direct main"
     description:

@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:skillwave/config/routes/app_router.dart';
 import 'package:skillwave/config/themes/app_themes.dart';
 import 'package:skillwave/features/auth/domian/entity/login_entity.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
@@ -113,7 +115,7 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SendOtpScreen(),));
+                      context.router.push(const SendOtpRoute());
                     },
                     child: Text("Forgot Password?", style: TextStyle(color: Colors.grey.shade600)),
                   ),
@@ -179,7 +181,7 @@ class _LoginFormState extends State<LoginForm> {
                       color: SkillWaveAppColors.primary,
                       text: "Sign Up",
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => SignupView(),));
+                        context.router.replaceAll([const SignupRoute()]);
                       },
                     ),
                   ],

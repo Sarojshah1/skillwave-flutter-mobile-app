@@ -5,11 +5,13 @@ import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillwave/features/welcomescreens/presentation/screens/splash_Screen.dart';
 
 import 'config/di/di.container.dart';
+import 'config/routes/app_router.dart';
 import 'cores/services/snackbar_service.dart';
 import 'features/welcomescreens/presentation/bloc/splashBloc/splash_bloc.dart';
 
 class SkillWaveApp extends StatelessWidget {
-  const SkillWaveApp({super.key});
+  final AppRouter appRouter;
+  const SkillWaveApp({super.key, required this.appRouter});
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +33,11 @@ class SkillWaveApp extends StatelessWidget {
               create: (_) => getIt<AuthBloc>()),
 
           ],
-          child: MaterialApp(
+          child: MaterialApp.router(
             title: 'SkillWave App',
-
-            navigatorKey: navKey,
+            routerConfig: appRouter.config(),
             scaffoldMessengerKey: snackbarService.messengerKey,
             debugShowCheckedModeBanner: false,
-            home: SplashView(),
-
           ),
         );
       },

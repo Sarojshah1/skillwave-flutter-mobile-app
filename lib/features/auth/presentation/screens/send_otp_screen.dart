@@ -1,13 +1,16 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skillwave/config/constants/app_assets.dart';
+import 'package:skillwave/config/routes/app_router.dart';
 import 'package:skillwave/config/themes/app_themes.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillwave/features/auth/presentation/screens/verify_otp_screen.dart';
 import 'package:skillwave/features/auth/presentation/widgets/custom_primary_button.dart';
 import 'package:skillwave/features/auth/presentation/widgets/custom_text_field.dart';
 
+@RoutePage()
 class SendOtpScreen extends StatefulWidget {
   const SendOtpScreen({super.key});
 
@@ -46,7 +49,7 @@ class _SendOtpScreenState extends State<SendOtpScreen> {
                 backgroundColor: Colors.green,
               ),
             );
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => VerifyOtpScreen(email: _emailController.text),));
+            context.router.replaceAll([VerifyOtpRoute(email: _emailController.text)]);
           } else if (state is AuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

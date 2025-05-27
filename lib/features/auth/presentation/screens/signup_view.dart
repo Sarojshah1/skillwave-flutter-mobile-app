@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skillwave/config/constants/app_assets.dart';
+import 'package:skillwave/config/routes/app_router.dart';
 import 'package:skillwave/config/themes/app_themes.dart';
 import 'package:skillwave/features/auth/domian/entity/sign_up_entity.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
@@ -13,6 +15,7 @@ import 'package:skillwave/features/auth/presentation/widgets/custom_text_field.d
 import 'package:skillwave/features/auth/presentation/widgets/signup_widgets/profile_image_widget.dart';
 import 'login_view.dart';
 
+@RoutePage()
 class SignupView extends StatefulWidget {
   const SignupView({super.key});
 
@@ -43,8 +46,9 @@ class _SignupViewState extends State<SignupView> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: SkillWaveAppColors.primary,
-            expandedHeight: 160,
+            expandedHeight: 80,
             pinned: true,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
@@ -73,19 +77,19 @@ class _SignupViewState extends State<SignupView> {
                         });
                       },
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     CustomTextField(
                       controller: _nameController,
                       hintText: 'Full Name',
                       prefixIcon: Icons.person,
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     CustomTextField(
                       controller: _emailController,
                       hintText: 'Email',
                       prefixIcon: Icons.email,
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     CustomTextField(
                       prefixIcon: Icons.lock,
                       isPassword: true,
@@ -106,7 +110,7 @@ class _SignupViewState extends State<SignupView> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     CustomTextField(
                       prefixIcon: Icons.lock,
                       isPassword: true,
@@ -124,14 +128,14 @@ class _SignupViewState extends State<SignupView> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     CustomTextField(
                       controller: _bioController,
                       hintText: 'Tell us about yourself',
                       prefixIcon: Icons.info,
                       maxLines: 3,
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 30.h),
                     CustomPrimaryButton(
                       text: 'Sign Up',
                       icon: Icons.arrow_right_alt_rounded,
@@ -150,10 +154,7 @@ class _SignupViewState extends State<SignupView> {
                             style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(builder: (_) => LoginView()),
-                                );
+                                context.router.replace(const LoginRoute());
                               },
                           ),
                         ],
@@ -210,7 +211,7 @@ class _SignupViewState extends State<SignupView> {
             child: ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginView()));
+                context.router.replace(const LoginRoute());
               },
               style: ElevatedButton.styleFrom(
                 shape: StadiumBorder(),

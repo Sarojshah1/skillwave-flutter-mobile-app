@@ -1,14 +1,16 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:skillwave/config/constants/app_assets.dart';
+import 'package:skillwave/config/routes/app_router.dart';
 import 'package:skillwave/config/themes/app_themes.dart';
 import 'package:skillwave/cores/shared_prefs/app_shared_prefs.dart';
 import 'package:skillwave/features/auth/presentation/screens/login_view.dart';
 import 'package:skillwave/features/welcomescreens/presentation/bloc/obBoardingBloc/onboarding_cubit.dart';
 
-
+@RoutePage()
 class OnboardingView extends StatelessWidget {
   const OnboardingView({super.key});
 
@@ -21,32 +23,60 @@ class OnboardingView extends StatelessWidget {
   }
 }
 
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends StatefulWidget {
    OnboardingScreen({super.key});
+   final List<Map<String, String>> onboardingData = [
+     {
+       "image": SkillWaveAppAssets.onboarding1,
+       "title": "Start Your Journey Today",
+       "description": "Begin your educational adventure with SkillWave, where every lesson counts."
+     },
+     {
+       "image":  SkillWaveAppAssets.onboarding2,
+       "title": "Empower Your Education Journey",
+       "description": "Strengthen your knowledge with interactive lessons designed for your success."
+     },
+     {
+       "image":  SkillWaveAppAssets.onboarding3,
+       "title": "Explore Endless Possibilities",
+       "description": "Unlock new skills and potential with comprehensive quizzes and assessments."
+     },
+     {
+       "image":  SkillWaveAppAssets.onboarding4,
+       "title": "Step into a World of Learning Excellence",
+       "description": "Achieve your goals with a personalized learning experience and progress tracking."
+     },
+   ];
 
-  final List<Map<String, String>> onboardingData = [
-    {
-      "image": SkillWaveAppAssets.onboarding1,
-      "title": "Start Your Journey Today",
-      "description": "Begin your educational adventure with SkillWave, where every lesson counts."
-    },
-    {
-      "image":  SkillWaveAppAssets.onboarding2,
-      "title": "Empower Your Education Journey",
-      "description": "Strengthen your knowledge with interactive lessons designed for your success."
-    },
-    {
-      "image":  SkillWaveAppAssets.onboarding3,
-      "title": "Explore Endless Possibilities",
-      "description": "Unlock new skills and potential with comprehensive quizzes and assessments."
-    },
-    {
-      "image":  SkillWaveAppAssets.onboarding4,
-      "title": "Step into a World of Learning Excellence",
-      "description": "Achieve your goals with a personalized learning experience and progress tracking."
-    },
-  ];
 
+   @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  late final PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+
+    context.read<OnboardingCubit>().stream.listen((pageIndex) {
+      if (_pageController.hasClients) {
+        _pageController.animateToPage(
+          pageIndex,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OnboardingCubit, int>(
@@ -58,14 +88,16 @@ class OnboardingScreen extends StatelessWidget {
           body: Stack(
             children: [
               PageView.builder(
+                controller: _pageController,
                 onPageChanged: (index) {
+                  // Update cubit state when user swipes pages
                   context.read<OnboardingCubit>().emit(index);
                 },
-                itemCount: onboardingData.length,
+                itemCount: widget.onboardingData.length,
                 itemBuilder: (context, index) => OnboardingSlide(
-                  image: onboardingData[index]["image"]!,
-                  title: onboardingData[index]["title"]!,
-                  description: onboardingData[index]["description"]!,
+                  image: widget.onboardingData[index]["image"]!,
+                  title: widget.onboardingData[index]["title"]!,
+                  description: widget.onboardingData[index]["description"]!,
                   screenWidth: screenWidth,
                   screenHeight: screenHeight,
                 ),
@@ -75,6 +107,7 @@ class OnboardingScreen extends StatelessWidget {
                 right: screenWidth * 0.05,
                 child: TextButton(
                   onPressed: () {
+                    // Emit last page index (skip)
                     context.read<OnboardingCubit>().skipOnboarding();
                   },
                   child: Text(
@@ -95,7 +128,7 @@ class OnboardingScreen extends StatelessWidget {
                   children: [
                     Row(
                       children: List.generate(
-                        onboardingData.length,
+                        widget.onboardingData.length,
                             (index) => AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
                           margin: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -112,21 +145,17 @@ class OnboardingScreen extends StatelessWidget {
                     ),
                     ElevatedButton.icon(
                       onPressed: () {
-                        if (context.read<OnboardingCubit>().isLastPage()) {
+                        final cubit = context.read<OnboardingCubit>();
+                        if (cubit.isLastPage()) {
                           final appSharedPrefs = GetIt.I<AppSharedPrefs>();
                           appSharedPrefs.setFirstTime(false);
-
-                          // Navigate to login screen
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => LoginView()),
-                          );
+                          context.router.replaceAll([const LoginRoute()]);
                         } else {
-                          context.read<OnboardingCubit>().nextPage();
+                          cubit.nextPage();
                         }
                       },
                       label: Text(
-                        currentPage == onboardingData.length - 1
+                        currentPage == widget.onboardingData.length - 1
                             ? "Continue"
                             : "Next",
                         style: const TextStyle(
@@ -135,7 +164,7 @@ class OnboardingScreen extends StatelessWidget {
                         ),
                       ),
                       icon: Icon(
-                        currentPage == onboardingData.length - 1
+                        currentPage == widget.onboardingData.length - 1
                             ? Icons.arrow_forward_outlined
                             : Icons.arrow_forward,
                         color: Colors.white,

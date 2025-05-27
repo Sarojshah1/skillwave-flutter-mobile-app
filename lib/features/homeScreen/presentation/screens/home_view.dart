@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:skillwave/config/themes/app_themes.dart';
 
+@RoutePage()
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
 

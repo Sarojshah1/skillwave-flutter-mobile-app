@@ -62,7 +62,7 @@ class AuthRemoteDataSource {
         data: loginModel.toJson(),
       );
 
-      print('Login Response: $response');
+      print('Login Response: ${response.statusMessage}');
       print("hello from auth datasource");
 
       if (response.statusCode == 200 && response.data != null) {
@@ -80,17 +80,19 @@ class AuthRemoteDataSource {
 
           return const Right(true);
         } else {
+          print( "Login failed: ${response.statusCode ?? 'Unknown error'}");
           return const Left(ApiFailure(message: "Missing fields in response"));
         }
       } else {
+        print( "Login failed: ${response.statusCode ?? 'Unknown error'}");
         return Left(ApiFailure(
           message: "Login failed: ${response.statusMessage ?? 'Unknown error'}",
         ));
       }
     } on DioException catch (e) {
-      return Left(ApiFailure(message: e.message ?? "Dio error occurred"));
+      print( "Login failed: ${e.response!.data}");
+      return Left(ApiFailure(message: e.response!.data['message']));
     } catch (e) {
-      // This catches all other runtime errors (e.g., null access, parsing, etc.)
       return Left(ApiFailure(message: "Unexpected error: ${e.toString()}"));
     }
   }
