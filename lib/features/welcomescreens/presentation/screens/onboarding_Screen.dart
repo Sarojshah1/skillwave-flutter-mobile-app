@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:skillwave/config/constants/app_assets.dart';
 import 'package:skillwave/config/routes/app_router.dart';
-import 'package:skillwave/config/themes/app_themes.dart';
+import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/cores/shared_prefs/app_shared_prefs.dart';
 import 'package:skillwave/features/auth/presentation/screens/login_view.dart';
 import 'package:skillwave/features/welcomescreens/presentation/bloc/obBoardingBloc/onboarding_cubit.dart';

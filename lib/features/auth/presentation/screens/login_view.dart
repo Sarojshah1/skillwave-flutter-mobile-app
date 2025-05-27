@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skillwave/config/routes/app_router.dart';
-import 'package:skillwave/config/themes/app_themes.dart';
+import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/cores/common/common_snackbar.dart';
 import 'package:skillwave/features/auth/domian/entity/login_entity.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
@@ -32,12 +32,8 @@ class _LoginViewState extends State<LoginView> {
 
           } else if (state is LoginSuccess) {
             CommonSnackbar.show(context,title: "Success", message: "Login successfull",isError: false);
-            context.router.replaceAll([const HomeRoute()]);
+            context.replaceRoute(const HomeRoute());
 
-            // Navigator.pushReplacement(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => const HomeView()),
-            // );
           } else if (state is AuthFailure) {
             CommonSnackbar.show(
               context,
