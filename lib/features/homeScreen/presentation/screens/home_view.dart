@@ -27,7 +27,7 @@ class HomeView extends StatelessWidget {
           onTap: tabsRouter.setActiveIndex,
           selectedItemColor: SkillWaveAppColors.primary,
           unselectedItemColor: SkillWaveAppColors.grey,
-          backgroundColor: Colors.white,
+
           elevation: 8,
           type: BottomNavigationBarType.fixed,
           items: BottomNavItems.items,

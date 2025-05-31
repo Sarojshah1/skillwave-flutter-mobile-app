@@ -4,7 +4,6 @@ const TextTheme skillWaveTextTheme = TextTheme(
   headlineLarge: TextStyle(
     fontSize: 24,
     fontWeight: FontWeight.bold,
-    color: SkillWaveAppColors.textPrimary,
   ),
   bodyMedium: TextStyle(
     fontSize: 16,
