@@ -6,7 +6,7 @@ import 'package:skillwave/features/homeScreen/presentation/constants/bottom_nav_
 
 @RoutePage()
 class HomeView extends StatelessWidget {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,6 @@ class HomeView extends StatelessWidget {
           onTap: tabsRouter.setActiveIndex,
           selectedItemColor: SkillWaveAppColors.primary,
           unselectedItemColor: SkillWaveAppColors.grey,
-
           elevation: 8,
           type: BottomNavigationBarType.fixed,
           items: BottomNavItems.items,
