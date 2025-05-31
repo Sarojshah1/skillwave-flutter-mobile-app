@@ -41,4 +41,9 @@ class IAuthRepository implements AuthRepository{
     return await dataSource.verifyOtp(otp, email);
   }
 
+  @override
+  Future<Either<ApiFailure, bool>> logout() async{
+    return await dataSource.logout();
+  }
+
 }

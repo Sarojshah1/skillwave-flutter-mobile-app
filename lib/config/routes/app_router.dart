@@ -16,6 +16,8 @@ import 'package:skillwave/features/profileScreen/presentation/screens/profile_sc
 import 'package:skillwave/features/welcomescreens/presentation/screens/onboarding_Screen.dart';
 import 'package:skillwave/features/welcomescreens/presentation/screens/splash_Screen.dart';
 
+import '../../features/SettingScreen/presentation/screens/aboutus_page.dart';
+
 part 'app_router.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page|View,Route')
@@ -44,5 +46,6 @@ class AppRouter extends RootStackRouter {
       AutoRoute(page: ProfileRoute.page, path: 'profile'),
       AutoRoute(page: SettingsRoute.page, path: 'settings'),
     ]),
+    AutoRoute(page: AboutUsRoute.page)
   ];
 }
