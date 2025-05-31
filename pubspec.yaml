@@ -99,6 +99,9 @@ dependencies:
 
 #  routes dependency
   auto_route: ^10.1.0
+  collection: ^1.19.1
+  iconsax: ^0.0.8
+  icons_plus: ^5.0.0
 
 
 
