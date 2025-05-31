@@ -32,7 +32,6 @@ class _SettingsViewState extends State<SettingsView> {
   }
   @override
   Widget build(BuildContext context) {
-    ThemeState isDarkMode= context.read<ThemeBloc>().state;
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -41,7 +40,7 @@ class _SettingsViewState extends State<SettingsView> {
             snap: true,
             centerTitle: true,
             backgroundColor: SkillWaveAppColors.primary,
-            elevation: 0,
+            elevation: 8,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
                 bottom: Radius.circular(24),
@@ -52,7 +51,6 @@ class _SettingsViewState extends State<SettingsView> {
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 22,
-                color: Colors.white,
               ),
             ),
           ),
@@ -116,7 +114,9 @@ class _SettingsViewState extends State<SettingsView> {
                     icon: Icons.info_outline,
                     title: 'About Us',
                     subtitle: 'Learn more about us',
-                    onTap: () {},
+                    onTap: () {
+                      context.router.navigate(AboutUsRoute());
+                    },
                   ),
                   SettingsNavigationTile(
                     icon: Icons.contact_mail_outlined,
