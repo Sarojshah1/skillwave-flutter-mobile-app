@@ -149,4 +149,21 @@ class AuthRemoteDataSource {
     }
   }
 
+  Future<Either<ApiFailure, bool>> logout() async {
+    try {
+      final deleteToken = await userSharedPrefs.deleteUserToken();
+      final deleteRole = await userSharedPrefs.deleteUserRole();
+      final deleteId = await userSharedPrefs.deleteUserId();
+
+      if (deleteToken.isRight() && deleteRole.isRight() && deleteId.isRight()) {
+        return const Right(true);
+      } else {
+        return const Left(ApiFailure(message: "Failed to clear user session"));
+      }
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
+
+
 }
