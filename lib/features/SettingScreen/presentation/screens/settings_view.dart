@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skillwave/config/routes/app_router.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/config/themes/theme_bloc/theme_bloc.dart';
-import 'package:skillwave/cores/common/common_snackbar.dart';
 import 'package:skillwave/features/SettingScreen/presentation/bloc/logout_bloc/logout_bloc.dart';
 import 'package:skillwave/features/SettingScreen/presentation/widgets/setting_widgets/section_card.dart';
 import 'package:skillwave/features/SettingScreen/presentation/widgets/setting_widgets/settings_dropdown_tile.dart';
