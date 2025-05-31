@@ -10,7 +10,7 @@ class SectionCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 2,
+      elevation: 8,
       child: Column(children: children),
     );
   }
