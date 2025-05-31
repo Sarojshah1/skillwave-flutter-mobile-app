@@ -11,4 +11,5 @@ abstract class AuthRepository{
   Future<Either<ApiFailure,String>> sendOtp(String email);
   Future<Either<ApiFailure,String>> verifyOtp(String otp,String email);
   Future<Either<ApiFailure,String>> forgetPassword(String password,String email);
+  Future<Either<ApiFailure, bool>> logout();
 }
