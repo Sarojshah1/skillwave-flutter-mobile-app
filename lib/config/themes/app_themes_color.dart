@@ -5,6 +5,11 @@ abstract final class SkillWaveAppColors {
   static const primary = Color.fromRGBO(22, 127, 113, 1);
   static const secondary = Color.fromRGBO(0, 145, 170, 1);
   static const accent = Color.fromRGBO(255, 203, 5, 1);
+  static const blue_alpha= Color(0x334F46E5);
+  static const purple_alpha= Color(0x334D4FCF);
+  static const indigo_alpha= Color(0x3345A4F0);
+  static const pink_alpha= Color(0x33EC4899);
+  static const cyan_alpha=  Color(0x3350E3C2);
 
   // === TEXT COLORS ===
   static const textPrimary = Color(0xFF1C1C1E);
@@ -47,6 +52,16 @@ abstract final class SkillWaveAppColors {
   // === GRADIENTS ===
   static const backgroundGradient = LinearGradient(
     colors: [lightBlueBackground, lightBlueAccent],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const backgroundGradient_2=LinearGradient(
+    colors: [
+      Color(0xFFF8FAFC),
+      Color(0xFFE0F2FE),
+      Color(0xFFEEF2FF),
+    ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
