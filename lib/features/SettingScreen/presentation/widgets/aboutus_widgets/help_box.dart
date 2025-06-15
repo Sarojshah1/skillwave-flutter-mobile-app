@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:skillwave/features/SettingScreen/presentation/widgets/aboutus_widgets/gradient_button.dart';
 
 class HelpBox extends StatelessWidget {
-  const HelpBox();
+  const HelpBox({super.key});
 
   @override
   Widget build(BuildContext context) {

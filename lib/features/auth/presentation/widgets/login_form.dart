@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,8 +6,6 @@ import 'package:skillwave/config/routes/app_router.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/features/auth/domian/entity/login_entity.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:skillwave/features/auth/presentation/screens/send_otp_screen.dart';
-import 'package:skillwave/features/auth/presentation/screens/signup_view.dart';
 import 'package:skillwave/features/homeScreen/presentation/screens/home_view.dart';
 
 import 'custom_primary_button.dart';
@@ -125,10 +122,7 @@ class _LoginFormState extends State<LoginForm> {
               BlocConsumer<AuthBloc, AuthState>(
                 listener: (context, state) {
                   if (state is LoginSuccess) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) => HomeView()),
-                    );
+                    context.replaceRoute(const HomeRoute());
                   } else if (state is AuthFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(state.message)),

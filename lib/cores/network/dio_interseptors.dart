@@ -4,7 +4,6 @@ class DioErrorInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response != null) {
-      // Handle server errors
       if (err.response!.statusCode! >= 300) {
         err = DioException(
           requestOptions: err.requestOptions,

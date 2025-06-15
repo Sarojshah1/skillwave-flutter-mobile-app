@@ -5,7 +5,7 @@ import 'package:skillwave/features/SettingScreen/presentation/widgets/aboutus_wi
 import 'package:skillwave/features/SettingScreen/presentation/widgets/aboutus_widgets/text_field.dart';
 
 class ContactForm extends StatelessWidget {
-  const ContactForm();
+  const ContactForm({super.key});
 
   @override
   Widget build(BuildContext context) {

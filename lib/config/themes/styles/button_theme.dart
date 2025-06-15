@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
-import 'text_theme.dart';
 
 final elevatedButtonTheme = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(

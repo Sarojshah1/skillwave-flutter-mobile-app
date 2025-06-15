@@ -1,9 +1,7 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:icons_plus/icons_plus.dart';
 import 'package:skillwave/config/constants/app_assets.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/features/SettingScreen/data/model/team_member.dart';

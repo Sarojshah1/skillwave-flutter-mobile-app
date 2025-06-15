@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get_it/get_it.dart';
 
 import 'app.dart';
 import 'config/di/di.container.dart';
@@ -11,9 +9,7 @@ void main() async {
   await configureDependencies();
   final appRouter = getIt<AppRouter>();
   runApp(
-    ProviderScope(
-      child: SkillWaveApp(appRouter: appRouter), // <-- pass it to app
-    ),
+    SkillWaveApp(appRouter: appRouter),
   );
 }
 

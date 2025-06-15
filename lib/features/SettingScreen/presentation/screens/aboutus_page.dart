@@ -420,7 +420,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
             ),
             SizedBox(height: 4),
             Text(
-              '$role',
+              role,
               style: TextStyle(
                 fontSize: MediaQuery.of(context).size.width * 0.04,
                 color: Colors.grey[600],

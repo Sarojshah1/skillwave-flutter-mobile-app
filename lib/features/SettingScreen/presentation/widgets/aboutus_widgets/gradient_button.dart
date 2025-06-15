@@ -5,7 +5,7 @@ class GradientButton extends StatelessWidget {
   final Color background;
   final Color textColor;
 
-  const GradientButton(this.label, {this.background = Colors.white, this.textColor = Colors.white});
+  const GradientButton(this.label, {super.key, this.background = Colors.white, this.textColor = Colors.white});
 
   @override
   Widget build(BuildContext context) {

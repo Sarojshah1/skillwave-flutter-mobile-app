@@ -12,7 +12,7 @@ class MissionVisionCard extends StatelessWidget {
   final Color tagTextColor;
   final Gradient underlineGradient;
 
-  const MissionVisionCard({
+  const MissionVisionCard({super.key, 
     required this.title,
     required this.icon,
     required this.iconGradient,
