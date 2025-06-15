@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DropdownField extends StatelessWidget {
-  const DropdownField();
+  const DropdownField({super.key});
 
   @override
   Widget build(BuildContext context) {

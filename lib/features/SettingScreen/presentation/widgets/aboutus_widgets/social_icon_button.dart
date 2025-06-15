@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SocialIconButton extends StatefulWidget {
   final IconData icon;
 
-  const SocialIconButton({required this.icon});
+  const SocialIconButton({super.key, required this.icon});
 
   @override
   State<SocialIconButton> createState() => _SocialIconButtonState();

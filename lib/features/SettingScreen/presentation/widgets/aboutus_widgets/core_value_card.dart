@@ -6,7 +6,7 @@ class CoreValueCard extends StatefulWidget {
   final String description;
   final Gradient gradient;
 
-  const CoreValueCard({
+  const CoreValueCard({super.key, 
     required this.icon,
     required this.title,
     required this.description,
