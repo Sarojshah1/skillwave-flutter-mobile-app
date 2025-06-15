@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class ContactCard extends StatelessWidget {
   final Map<String, dynamic> info;
 
-  const ContactCard(this.info);
+  const ContactCard(this.info, {super.key});
 
   @override
   Widget build(BuildContext context) {

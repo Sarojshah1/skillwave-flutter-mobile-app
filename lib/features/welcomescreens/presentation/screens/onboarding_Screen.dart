@@ -198,7 +198,7 @@ class OnboardingSlide extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
 
-  const OnboardingSlide({
+  const OnboardingSlide({super.key, 
     required this.image,
     required this.title,
     required this.description,

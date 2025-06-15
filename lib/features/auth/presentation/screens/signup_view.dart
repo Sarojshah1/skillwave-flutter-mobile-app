@@ -13,7 +13,6 @@ import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillwave/features/auth/presentation/widgets/custom_primary_button.dart';
 import 'package:skillwave/features/auth/presentation/widgets/custom_text_field.dart';
 import 'package:skillwave/features/auth/presentation/widgets/signup_widgets/profile_image_widget.dart';
-import 'login_view.dart';
 
 @RoutePage()
 class SignupView extends StatefulWidget {

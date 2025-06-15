@@ -7,7 +7,7 @@ class ProfileImageWidget extends StatelessWidget {
   final File? profileImage;
   final Function(File) onImageSelected;
 
-  const ProfileImageWidget({required this.profileImage, required this.onImageSelected, Key? key}) : super(key: key);
+  const ProfileImageWidget({required this.profileImage, required this.onImageSelected, super.key});
 
   Future<void> _pickImage(ImageSource source, BuildContext context) async {
     final pickedImage = await ImagePicker().pickImage(source: source);

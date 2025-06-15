@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
-import 'package:skillwave/cores/network/models/skillwave_response.dart';
 import 'package:skillwave/features/auth/domian/entity/login_entity.dart';
 import 'package:skillwave/features/auth/domian/entity/sign_up_entity.dart';
 import 'package:skillwave/features/auth/domian/usecases/create_user_usecase.dart';
