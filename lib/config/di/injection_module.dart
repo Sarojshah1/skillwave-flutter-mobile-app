@@ -14,6 +14,4 @@ abstract class InjectionModule {
   GlobalKey<ScaffoldMessengerState> get scaffoldMessengerKey => GlobalKey<ScaffoldMessengerState>();
   @lazySingleton
   GlobalKey<NavigatorState> get navigatorKey => GlobalKey<NavigatorState>();
-  @lazySingleton
-  Dio get dio => Dio();
 }

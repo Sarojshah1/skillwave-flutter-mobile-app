@@ -9,6 +9,7 @@ import 'config/di/di.container.dart';
 import 'config/routes/app_router.dart';
 import 'config/themes/theme_bloc/theme_bloc.dart';
 import 'cores/services/snackbar_service.dart';
+import 'features/profileScreen/presentation/bloc/profile_bloc.dart';
 import 'features/welcomescreens/presentation/bloc/splashBloc/splash_bloc.dart';
 
 class SkillWaveApp extends StatelessWidget {
@@ -36,6 +37,9 @@ class SkillWaveApp extends StatelessWidget {
               create: (_) => getIt<AuthBloc>()),
             BlocProvider<LogoutBloc>(
                 create: (_) => getIt<LogoutBloc>()),
+            BlocProvider<ProfileBloc>(
+              create: (_) => getIt<ProfileBloc>(),
+            ),
 
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(
