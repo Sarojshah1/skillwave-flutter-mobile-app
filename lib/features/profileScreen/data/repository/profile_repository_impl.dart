@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:injectable/injectable.dart';
 import 'package:skillwave/features/profileScreen/data/datasource/profile_remote_data_source.dart';
 import 'package:skillwave/features/profileScreen/domin/entity/user_entity.dart';
@@ -13,6 +15,11 @@ class ProfileReposiotryImpl implements IProfileRepository{
     return response;
 
 
+  }
+
+  @override
+  Future<void> updateProfilePicture(File imageFile) async{
+    return await datasource.updateProfilePicture(imageFile);
   }
 
 }

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skillwave/features/profileScreen/presentation/bloc/profile_bloc.dart';
 import 'package:skillwave/features/profileScreen/presentation/widgets/personal_info.dart';
 import 'package:skillwave/features/profileScreen/presentation/widgets/profile_header.dart';
+import 'package:skillwave/features/profileScreen/presentation/widgets/setting_section.dart';
 import 'package:skillwave/features/profileScreen/presentation/widgets/tab_navigation.dart';
 import 'package:skillwave/features/profileScreen/domin/entity/user_entity.dart';
 
@@ -37,7 +38,7 @@ class _ProfileViewState extends State<ProfileView> {
       case 'quizzes':
         return const Center(child: Text("Quizzes Section"));
       case 'settings':
-        return const Center(child: Text("Settings Section"));
+        return const SettingsSection();
       default:
         return PersonalInfo(user: user);
     }

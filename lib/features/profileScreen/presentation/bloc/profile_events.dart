@@ -7,3 +7,11 @@ abstract class ProfileEvent extends Equatable {
 }
 
 class LoadUserProfile extends ProfileEvent {}
+class UpdateProfilePicture extends ProfileEvent {
+  final File imageFile;
+
+  const UpdateProfilePicture(this.imageFile);
+
+  @override
+  List<Object?> get props => [imageFile];
+}

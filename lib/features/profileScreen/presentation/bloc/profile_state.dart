@@ -29,3 +29,6 @@ class ProfileError extends ProfileState {
   @override
   List<Object?> get props => [failure];
 }
+class ProfileUpdating extends ProfileState {}
+
+class ProfileUpdateSuccess extends ProfileState {}
