@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:skillwave/config/constants/api_endpoints.dart';
 import 'package:skillwave/cores/failure/failure.dart';
+import 'package:skillwave/cores/network/hive_service.dart';
 import 'package:skillwave/cores/shared_prefs/user_shared_prefs.dart';
 import 'package:skillwave/features/auth/data/models/login/login_model_params.dart';
 import 'package:skillwave/features/auth/domian/entity/sign_up_entity.dart';
@@ -14,10 +15,12 @@ import 'package:skillwave/features/auth/domian/entity/sign_up_entity.dart';
 class AuthRemoteDataSource {
   final Dio dio;
   final UserSharedPrefs userSharedPrefs;
+  final HiveService hiveService;
 
   AuthRemoteDataSource({
     required this.dio,
     required this.userSharedPrefs,
+    required this.hiveService,
   });
 
   Future<Either<ApiFailure, bool>> createUser(SignUpEntity user, File? profilePicture) async {
@@ -62,13 +65,8 @@ class AuthRemoteDataSource {
         data: loginModel.toJson(),
       );
 
-      print('Login Response: ${response.statusMessage}');
-      print("hello from auth datasource");
-
       if (response.statusCode == 200 && response.data != null) {
         final data = response.data;
-
-        // Validate response structure
         if (data.containsKey('token') && data.containsKey('role') && data.containsKey('id')) {
           final token = data['token'];
           final role = data['role'];
@@ -77,20 +75,19 @@ class AuthRemoteDataSource {
           await userSharedPrefs.setUserToken(token);
           await userSharedPrefs.setUserRole(role);
           await userSharedPrefs.setUserId(id);
+          await hiveService.saveLogin(token);
 
           return const Right(true);
         } else {
-          print( "Login failed: ${response.statusCode ?? 'Unknown error'}");
+
           return const Left(ApiFailure(message: "Missing fields in response"));
         }
       } else {
-        print( "Login failed: ${response.statusCode ?? 'Unknown error'}");
         return Left(ApiFailure(
           message: "Login failed: ${response.statusMessage ?? 'Unknown error'}",
         ));
       }
     } on DioException catch (e) {
-      print( "Login failed: ${e.response!.data}");
       return Left(ApiFailure(message: e.response!.data['message']));
     } catch (e) {
       return Left(ApiFailure(message: "Unexpected error: ${e.toString()}"));
@@ -99,12 +96,8 @@ class AuthRemoteDataSource {
 
   Future<Either<ApiFailure,String>> sendOtp(String email)async{
     try{
-      print("sendotp data source");
       Response response=await dio.post(ApiEndpoints.sendOtp,data: {'email':email});
-      print(response);
       if(response.statusCode==200){
-
-
         String message=response.data;
         return right(message);
 
@@ -134,8 +127,6 @@ class AuthRemoteDataSource {
   Future<Either<ApiFailure,String>> forgetPassword(String password,String email)async{
     try{
       Response response=await dio.put(ApiEndpoints.ForgetPassword,data: {'email':email,'newPassword':password});
-      print(response.data);
-      print(response.statusCode);
       if(response.statusCode==200){
         String message=response.data['message'];
         return right(message);

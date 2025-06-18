@@ -15,7 +15,7 @@ part 'theme_event.dart';
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   final SharedPreferences sharedPreferences;
 
-  ThemeBloc(this.sharedPreferences) : super(const ThemeDark()) {
+  ThemeBloc(this.sharedPreferences) : super(const ThemeLight()) {
     on<LoadTheme>(_onLoadTheme);
     on<ToggleTheme>(_onToggleTheme);
   }
