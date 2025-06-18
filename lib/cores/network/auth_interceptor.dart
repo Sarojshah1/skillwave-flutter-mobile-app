@@ -14,7 +14,6 @@ class AuthInterceptor extends Interceptor {
 
     tokenResult.fold(
           (failure) {
-        // Continue without token if there's an error
         handler.next(options);
       },
           (token) {
