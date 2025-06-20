@@ -9,7 +9,6 @@ class SettingsSection extends StatefulWidget {
 }
 
 class _SettingsSectionState extends State<SettingsSection> {
-  // State variables for switches
   bool twoFactorAuth = false;
   bool emailNotifications = true;
   bool pushNotifications = true;
@@ -18,6 +17,10 @@ class _SettingsSectionState extends State<SettingsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: LayoutBuilder(
@@ -36,7 +39,16 @@ class _SettingsSectionState extends State<SettingsSection> {
                   subtitle: "Update your account password",
                   trailing: OutlinedButton(
                     onPressed: () {},
-                    child: const Text("Change"),
+                    child: Text(
+                      "Change",
+                      style: TextStyle(color: colorScheme.primary),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: colorScheme.primary),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
                 ),
                 _settingTile(
@@ -45,13 +57,10 @@ class _SettingsSectionState extends State<SettingsSection> {
                   subtitle: "Add an extra layer of security",
                   trailing: FlutterSwitch(
                     value: twoFactorAuth,
-                    onToggle: (val) {
-                      setState(() {
-                        twoFactorAuth = val;
-                      });
-                    },
+                    onToggle: (val) => setState(() => twoFactorAuth = val),
                     height: 24,
                     width: 48,
+                    activeColor: colorScheme.primary,
                   ),
                 ),
               ],
@@ -67,13 +76,10 @@ class _SettingsSectionState extends State<SettingsSection> {
                   subtitle: "Receive course updates via email",
                   trailing: FlutterSwitch(
                     value: emailNotifications,
-                    onToggle: (val) {
-                      setState(() {
-                        emailNotifications = val;
-                      });
-                    },
+                    onToggle: (val) => setState(() => emailNotifications = val),
                     height: 24,
                     width: 48,
+                    activeColor: colorScheme.primary,
                   ),
                 ),
                 _settingTile(
@@ -82,13 +88,10 @@ class _SettingsSectionState extends State<SettingsSection> {
                   subtitle: "Get notified about new content",
                   trailing: FlutterSwitch(
                     value: pushNotifications,
-                    onToggle: (val) {
-                      setState(() {
-                        pushNotifications = val;
-                      });
-                    },
+                    onToggle: (val) => setState(() => pushNotifications = val),
                     height: 24,
                     width: 48,
+                    activeColor: colorScheme.primary,
                   ),
                 ),
               ],
@@ -104,13 +107,10 @@ class _SettingsSectionState extends State<SettingsSection> {
                   subtitle: "Make your profile public",
                   trailing: FlutterSwitch(
                     value: profileVisibility,
-                    onToggle: (val) {
-                      setState(() {
-                        profileVisibility = val;
-                      });
-                    },
+                    onToggle: (val) => setState(() => profileVisibility = val),
                     height: 24,
                     width: 48,
+                    activeColor: colorScheme.primary,
                   ),
                 ),
                 _settingTile(
@@ -119,13 +119,10 @@ class _SettingsSectionState extends State<SettingsSection> {
                   subtitle: "Display course progress publicly",
                   trailing: FlutterSwitch(
                     value: showProgress,
-                    onToggle: (val) {
-                      setState(() {
-                        showProgress = val;
-                      });
-                    },
+                    onToggle: (val) => setState(() => showProgress = val),
                     height: 24,
                     width: 48,
+                    activeColor: colorScheme.primary,
                   ),
                 ),
               ],
@@ -134,8 +131,8 @@ class _SettingsSectionState extends State<SettingsSection> {
               context,
               icon: Icons.delete_outline,
               title: "Danger Zone",
-              titleColor: Colors.red,
-              borderColor: Colors.red.shade100,
+              titleColor: colorScheme.error,
+              borderColor: colorScheme.errorContainer.withOpacity(0.3),
               children: [
                 _settingTile(
                   context,
@@ -143,9 +140,12 @@ class _SettingsSectionState extends State<SettingsSection> {
                   subtitle: "Permanently delete your account and data",
                   trailing: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
+                      backgroundColor: colorScheme.error,
+                      foregroundColor: colorScheme.onError,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     onPressed: () {},
                     child: const Text("Delete"),
@@ -175,7 +175,7 @@ class _SettingsSectionState extends State<SettingsSection> {
               children: [
                 for (var i = 0; i < cards.length; i++) ...[
                   cards[i],
-                  if (i != cards.length - 1) const SizedBox(height: 16),
+                  if (i != cards.length - 1) SizedBox(height: 16),
                 ],
               ],
             );
@@ -193,26 +193,36 @@ class _SettingsSectionState extends State<SettingsSection> {
         Color? titleColor,
         Color? borderColor,
       }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final bgColor = theme.cardColor;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       decoration: BoxDecoration(
-        border: Border.all(color: borderColor ?? Colors.grey.shade300),
+        border: Border.all(color: borderColor ?? colorScheme.outline),
         borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
+        color: bgColor,
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.shadow.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, size: 20, color: titleColor ?? Colors.black),
+              Icon(icon, size: 20, color: titleColor ?? colorScheme.onSurface),
               const SizedBox(width: 8),
               Text(
                 title,
-                style: TextStyle(
+                style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: titleColor ?? Colors.black,
+                  color: titleColor ?? colorScheme.onSurface,
                 ),
               ),
             ],
@@ -230,6 +240,9 @@ class _SettingsSectionState extends State<SettingsSection> {
         required String subtitle,
         required Widget trailing,
       }) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(
@@ -239,11 +252,16 @@ class _SettingsSectionState extends State<SettingsSection> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+                Text(title,
+                    style: textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    )),
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
-                  style: const TextStyle(fontSize: 12),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: textTheme.bodySmall?.color?.withOpacity(0.7),
+                  ),
                 ),
               ],
             ),

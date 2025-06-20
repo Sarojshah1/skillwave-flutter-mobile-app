@@ -16,7 +16,7 @@ class ProfileHeader extends StatelessWidget {
   Future<void> _showImageSourceSelector(BuildContext context) async {
     final mountedContext = context;
     showModalBottomSheet(
-      context:  mountedContext,
+      context: mountedContext,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -70,7 +70,9 @@ class ProfileHeader extends StatelessWidget {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      color: isDarkMode ? SkillWaveAppColors.blue_alpha : SkillWaveAppColors.primary,
+      color: isDarkMode
+          ? SkillWaveAppColors.blue_alpha
+          : SkillWaveAppColors.primary,
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -82,7 +84,8 @@ class ProfileHeader extends StatelessWidget {
                 CircleAvatar(
                   radius: 40,
                   backgroundImage: CachedNetworkImageProvider(
-                      "http://10.0.2.2:3000/profile/${user.profilePicture}"),
+                    "http://10.0.2.2:3000/profile/${user.profilePicture}",
+                  ),
                 ),
                 const Positioned(
                   bottom: 0,
@@ -101,28 +104,45 @@ class ProfileHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(user.name,
-                    style: const TextStyle(
-                        fontSize: 22, color: Colors.white, fontWeight: FontWeight.bold)),
+                Text(
+                  user.name,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 4),
                 Text(user.email, style: const TextStyle(color: Colors.white70)),
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    const Icon(Icons.menu_book_rounded, color: Colors.white, size: 18),
+                    const Icon(
+                      Icons.menu_book_rounded,
+                      color: Colors.white,
+                      size: 18,
+                    ),
                     const SizedBox(width: 4),
-                    Text('${user.enrolledCourses.length} Enrolled',
-                        style: const TextStyle(color: Colors.white)),
+                    Text(
+                      '${user.enrolledCourses.length} Enrolled',
+                      style: const TextStyle(color: Colors.white),
+                    ),
                     const SizedBox(width: 16),
-                    const Icon(Icons.workspace_premium, color: Colors.white, size: 18),
+                    const Icon(
+                      Icons.workspace_premium,
+                      color: Colors.white,
+                      size: 18,
+                    ),
                     const SizedBox(width: 4),
-                    Text('${user.certificates.length} Certificates',
-                        style: const TextStyle(color: Colors.white)),
+                    Text(
+                      '${user.certificates.length} Certificates',
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ],
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
