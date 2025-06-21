@@ -8,7 +8,27 @@ import 'package:skillwave/config/routes/app_router.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/cores/shared_prefs/app_shared_prefs.dart';
 import 'package:skillwave/features/auth/presentation/screens/login_view.dart';
-import 'package:skillwave/features/welcomescreens/presentation/bloc/obBoardingBloc/onboarding_cubit.dart';
+
+// Updated OnboardingCubit with dynamic last page index
+class OnboardingCubit extends Cubit<int> {
+  final int lastPageIndex;
+
+  OnboardingCubit({required this.lastPageIndex}) : super(0);
+
+  void nextPage() {
+    if (state < lastPageIndex) {
+      emit(state + 1);
+    }
+  }
+
+  void skipOnboarding() {
+    emit(lastPageIndex);
+  }
+
+  bool isLastPage() {
+    return state == lastPageIndex;
+  }
+}
 
 @RoutePage()
 class OnboardingView extends StatelessWidget {
@@ -16,40 +36,46 @@ class OnboardingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lastPageIndex = OnboardingScreen.onboardingData.length - 1;
+
     return BlocProvider(
-      create: (_) => GetIt.I<OnboardingCubit>(),
-      child: OnboardingScreen(),
+      create: (_) => OnboardingCubit(lastPageIndex: lastPageIndex),
+      child: const OnboardingScreen(),
     );
   }
 }
 
 class OnboardingScreen extends StatefulWidget {
-   OnboardingScreen({super.key});
-   final List<Map<String, String>> onboardingData = [
-     {
-       "image": SkillWaveAppAssets.onboarding1,
-       "title": "Start Your Journey Today",
-       "description": "Begin your educational adventure with SkillWave, where every lesson counts."
-     },
-     {
-       "image":  SkillWaveAppAssets.onboarding2,
-       "title": "Empower Your Education Journey",
-       "description": "Strengthen your knowledge with interactive lessons designed for your success."
-     },
-     {
-       "image":  SkillWaveAppAssets.onboarding3,
-       "title": "Explore Endless Possibilities",
-       "description": "Unlock new skills and potential with comprehensive quizzes and assessments."
-     },
-     {
-       "image":  SkillWaveAppAssets.onboarding4,
-       "title": "Step into a World of Learning Excellence",
-       "description": "Achieve your goals with a personalized learning experience and progress tracking."
-     },
-   ];
+  const OnboardingScreen({super.key});
 
+  static final List<Map<String, String>> onboardingData = [
+    {
+      "image": SkillWaveAppAssets.onboarding1,
+      "title": "Start Your Journey Today",
+      "description":
+          "Begin your educational adventure with SkillWave, where every lesson counts.",
+    },
+    {
+      "image": SkillWaveAppAssets.onboarding2,
+      "title": "Empower Your Education Journey",
+      "description":
+          "Strengthen your knowledge with interactive lessons designed for your success.",
+    },
+    {
+      "image": SkillWaveAppAssets.onboarding3,
+      "title": "Explore Endless Possibilities",
+      "description":
+          "Unlock new skills and potential with comprehensive quizzes and assessments.",
+    },
+    {
+      "image": SkillWaveAppAssets.onboarding4,
+      "title": "Step into a World of Learning Excellence",
+      "description":
+          "Achieve your goals with a personalized learning experience and progress tracking.",
+    },
+  ];
 
-   @override
+  @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
@@ -77,68 +103,66 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     _pageController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return BlocBuilder<OnboardingCubit, int>(
       builder: (context, currentPage) {
-        final screenWidth = MediaQuery.of(context).size.width;
-        final screenHeight = MediaQuery.of(context).size.height;
-
         return Scaffold(
+          backgroundColor: theme.scaffoldBackgroundColor,
           body: Stack(
             children: [
               PageView.builder(
                 controller: _pageController,
                 onPageChanged: (index) {
-                  // Update cubit state when user swipes pages
                   context.read<OnboardingCubit>().emit(index);
                 },
-                itemCount: widget.onboardingData.length,
+                itemCount: OnboardingScreen.onboardingData.length,
                 itemBuilder: (context, index) => OnboardingSlide(
-                  image: widget.onboardingData[index]["image"]!,
-                  title: widget.onboardingData[index]["title"]!,
-                  description: widget.onboardingData[index]["description"]!,
-                  screenWidth: screenWidth,
-                  screenHeight: screenHeight,
+                  image: OnboardingScreen.onboardingData[index]["image"]!,
+                  title: OnboardingScreen.onboardingData[index]["title"]!,
+                  description:
+                      OnboardingScreen.onboardingData[index]["description"]!,
                 ),
               ),
               Positioned(
-                top: screenHeight * 0.05,
-                right: screenWidth * 0.05,
+                top: 40.h,
+                right: 20.w,
                 child: TextButton(
                   onPressed: () {
-                    // Emit last page index (skip)
                     context.read<OnboardingCubit>().skipOnboarding();
                   },
                   child: Text(
                     "Skip",
-                    style: TextStyle(
-                      fontSize: 14.sp,
+                    style: theme.textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
                 ),
               ),
               Positioned(
-                bottom: screenHeight * 0.05,
-                left: screenWidth * 0.05,
-                right: screenWidth * 0.05,
+                bottom: 40.h,
+                left: 20.w,
+                right: 20.w,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: List.generate(
-                        widget.onboardingData.length,
-                            (index) => AnimatedContainer(
+                        OnboardingScreen.onboardingData.length,
+                        (index) => AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
-                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                          height: 8,
-                          width: currentPage == index ? 20 : 8,
+                          margin: EdgeInsets.symmetric(horizontal: 4.w),
+                          height: 8.h,
+                          width: currentPage == index ? 20.w : 8.w,
                           decoration: BoxDecoration(
                             color: currentPage == index
-                                ? SkillWaveAppColors.primary
-                                : SkillWaveAppColors.grey,
-                            borderRadius: BorderRadius.circular(8),
+                                ? theme.colorScheme.primary
+                                : theme.disabledColor,
+                            borderRadius: BorderRadius.circular(8.r),
                           ),
                         ),
                       ),
@@ -154,29 +178,31 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           cubit.nextPage();
                         }
                       },
-                      label: Text(
-                        currentPage == widget.onboardingData.length - 1
-                            ? "Continue"
-                            : "Next",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                       icon: Icon(
-                        currentPage == widget.onboardingData.length - 1
+                        currentPage ==
+                                OnboardingScreen.onboardingData.length - 1
                             ? Icons.arrow_forward_outlined
                             : Icons.arrow_forward,
                         color: Colors.white,
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: SkillWaveAppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
+                      label: Text(
+                        currentPage ==
+                                OnboardingScreen.onboardingData.length - 1
+                            ? "Continue"
+                            : "Next",
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.colorScheme.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.r),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 12.h,
                         ),
                       ),
                     ),
@@ -195,57 +221,39 @@ class OnboardingSlide extends StatelessWidget {
   final String image;
   final String title;
   final String description;
-  final double screenWidth;
-  final double screenHeight;
 
-  const OnboardingSlide({super.key, 
+  const OnboardingSlide({
+    super.key,
     required this.image,
     required this.title,
     required this.description,
-    required this.screenWidth,
-    required this.screenHeight,
   });
 
   @override
   Widget build(BuildContext context) {
-    double imageHeight = screenHeight * 0.4;
-    if (screenWidth > 600) {
-      imageHeight = screenHeight * 0.5;
-    }
+    final theme = Theme.of(context);
 
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: screenWidth * 0.1,
-        vertical: screenHeight * 0.05,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
-            image,
-            height: imageHeight,
-            fit: BoxFit.contain,
-          ),
-          SizedBox(height: screenHeight * 0.04),
+          Image.asset(image, height: 300.h, fit: BoxFit.contain),
+          SizedBox(height: 30.h),
           Text(
             title,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: screenWidth * 0.08,
+            style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Colors.black,
             ),
           ),
-          SizedBox(height: screenHeight * 0.02),
+          SizedBox(height: 16.h),
           Text(
             description,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: screenWidth > 600
-                  ? screenWidth * 0.05
-                  : screenWidth * 0.045,
-              color: Colors.black54,
+            style: theme.textTheme.bodyMedium?.copyWith(
               height: 1.5,
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
             ),
           ),
         ],

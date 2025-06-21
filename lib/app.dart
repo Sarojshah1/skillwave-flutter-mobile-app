@@ -5,6 +5,7 @@ import 'package:skillwave/config/themes/%20theme/dark_theme.dart';
 import 'package:skillwave/config/themes/%20theme/light_theme.dart';
 import 'package:skillwave/features/SettingScreen/presentation/bloc/logout_bloc/logout_bloc.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:skillwave/features/blogScreen/presentation/bloc/blog_bloc.dart';
 import 'config/di/di.container.dart';
 import 'config/routes/app_router.dart';
 import 'config/themes/theme_bloc/theme_bloc.dart';
@@ -39,6 +40,9 @@ class SkillWaveApp extends StatelessWidget {
                 create: (_) => getIt<LogoutBloc>()),
             BlocProvider<ProfileBloc>(
               create: (_) => getIt<ProfileBloc>(),
+            ),
+            BlocProvider<BlogBloc>(
+              create: (_) => getIt<BlogBloc>(),
             ),
 
           ],

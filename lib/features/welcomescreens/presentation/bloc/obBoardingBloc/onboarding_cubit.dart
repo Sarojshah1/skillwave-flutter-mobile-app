@@ -1,17 +1,24 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@lazySingleton
 class OnboardingCubit extends Cubit<int> {
-  OnboardingCubit() : super(0); // Start at page 0
+  final int lastPageIndex;
+
+  OnboardingCubit({required this.lastPageIndex}) : super(0);
 
   void nextPage() {
-    emit(state + 1);
+    if (state < lastPageIndex) {
+      emit(state + 1);
+    }
   }
 
   void skipOnboarding() {
-    emit(3);
+    emit(lastPageIndex);
   }
 
   bool isLastPage() {
-    return state == 3;
+    return state == lastPageIndex;
   }
 }
+
