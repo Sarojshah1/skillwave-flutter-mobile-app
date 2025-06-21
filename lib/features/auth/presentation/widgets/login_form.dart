@@ -44,7 +44,7 @@ class _LoginFormState extends State<LoginForm> {
               Center(child: Image.asset('assets/icons/appicon.png')),
               const SizedBox(height: 40),
               Text(
-                "Let’s Sign In.!",
+                "Let's Sign In.!",
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -114,7 +114,10 @@ class _LoginFormState extends State<LoginForm> {
                     onPressed: () {
                       context.router.push(const SendOtpRoute());
                     },
-                    child: Text("Forgot Password?", style: TextStyle(color: Colors.grey.shade600)),
+                    child: Text(
+                      "Forgot Password?",
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
                   ),
                 ],
               ),
@@ -124,9 +127,9 @@ class _LoginFormState extends State<LoginForm> {
                   if (state is LoginSuccess) {
                     context.replaceRoute(const HomeRoute());
                   } else if (state is AuthFailure) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.message)),
-                    );
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(state.message)));
                   }
                 },
                 builder: (context, state) {
@@ -143,7 +146,12 @@ class _LoginFormState extends State<LoginForm> {
                           final password = _passwordController.text.trim();
 
                           context.read<AuthBloc>().add(
-                            LogInRequested(entity: LogInEntity(email: email, password: password)),
+                            LogInRequested(
+                              entity: LogInEntity(
+                                email: email,
+                                password: password,
+                              ),
+                            ),
                           );
                         }
                       },
@@ -167,10 +175,17 @@ class _LoginFormState extends State<LoginForm> {
               SizedBox(height: 20.h),
 
               Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    Text("Don’t have an account? ", style: TextStyle(color: Colors.grey.shade600, fontSize: 16.sp)),
+                    Text(
+                      "Don't have an account? ",
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 16.sp,
+                      ),
+                    ),
                     CustomTextLink(
                       color: SkillWaveAppColors.primary,
                       text: "Sign Up",

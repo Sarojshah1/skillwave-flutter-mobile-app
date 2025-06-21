@@ -1,4 +1,3 @@
-
 name: skillwave
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
@@ -93,7 +92,7 @@ dependencies:
   intl: ^0.20.2
   flutter_switch: ^0.3.2
   hive:
-
+  flutter_rating_bar: ^4.0.1
 
   pinput: ^5.0.1
 
@@ -125,6 +124,8 @@ dev_dependencies:
   freezed: ^2.5.8
   flutter_launcher_icons: ^0.14.3
   auto_route_generator: ^10.1.0
+  bloc_test: ^10.0.0
+  mockito: ^5.4.4
 #  hive_generator:
 
 

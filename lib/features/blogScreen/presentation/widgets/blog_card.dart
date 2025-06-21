@@ -88,7 +88,7 @@ class BlogCard extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 16.r,
                             backgroundImage: CachedNetworkImageProvider(
-                              "http://10.0.2.2:3000/profile/${blog.userId.profilePicture}",
+                              "http://10.0.2.2:3000/profile/${blog.user.profilePicture}",
                             ),
                             backgroundColor: color.surfaceVariant,
                           ),
@@ -96,7 +96,7 @@ class BlogCard extends StatelessWidget {
                         SizedBox(width: 12.w),
                         Expanded(
                           child: Text(
-                            blog.userId.name,
+                            blog.user.name,
                             style: text.bodyMedium?.copyWith(
                               fontWeight: FontWeight.w600,
                               color: color.onSurface,

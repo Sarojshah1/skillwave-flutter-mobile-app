@@ -26,7 +26,6 @@ class BlogBloc extends Bloc<BlogEvent, BlogState> {
       return;
     }
     try {
-      // Emit loading only if it's the first page or initial load
       if (event.page == 1) {
         emit(BlogLoading());
       }

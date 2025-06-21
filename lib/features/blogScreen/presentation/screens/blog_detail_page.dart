@@ -172,7 +172,7 @@ class _BlogDetailPageState extends State<BlogDetailPage> {
                           child: CircleAvatar(
                             radius: 22.r,
                             backgroundImage: CachedNetworkImageProvider(
-                              "http://10.0.2.2:3000/profile/${widget.blog.userId.profilePicture}",
+                              "http://10.0.2.2:3000/profile/${widget.blog.user.profilePicture}",
                             ),
                             backgroundColor:
                                 SkillWaveAppColors.lightGreyBackground,
@@ -184,7 +184,7 @@ class _BlogDetailPageState extends State<BlogDetailPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.blog.userId.name,
+                                widget.blog.user.name,
                                 style: Theme.of(context).textTheme.bodyLarge
                                     ?.copyWith(
                                       fontWeight: FontWeight.w700,

@@ -11,6 +11,8 @@ import 'package:skillwave/features/auth/presentation/screens/verify_otp_screen.d
 import 'package:skillwave/features/blogScreen/domain/entity/blog_entity.dart';
 import 'package:skillwave/features/blogScreen/presentation/screens/blog_detail_page.dart';
 import 'package:skillwave/features/blogScreen/presentation/screens/blogs_screen.dart';
+import 'package:skillwave/features/coursesScreen/domain/entity/course_entity.dart';
+import 'package:skillwave/features/coursesScreen/presentation/screens/course_detail_page.dart';
 import 'package:skillwave/features/coursesScreen/presentation/screens/course_screen.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/screen/dashboard_Screen.dart';
 import 'package:skillwave/features/homeScreen/presentation/screens/home_view.dart';
@@ -48,6 +50,7 @@ class AppRouter extends RootStackRouter {
       AutoRoute(page: ProfileRoute.page, path: 'profile'),
       AutoRoute(page: SettingsRoute.page, path: 'settings'),
     ]),
-    AutoRoute(page: AboutUsRoute.page)
+    AutoRoute(page: AboutUsRoute.page),
+    AutoRoute(page: CourseDetailsRoute.page)
   ];
 }
