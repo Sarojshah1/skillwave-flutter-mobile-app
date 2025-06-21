@@ -4,7 +4,7 @@ import 'package:skillwave/cores/network/models/skillwave_response.dart';
 import 'package:skillwave/features/auth/domian/repository/auth_repository.dart';
 
 @lazySingleton
-final class SendOtpUseCase {
+class SendOtpUseCase {
   final AuthRepository _repository;
   SendOtpUseCase(this._repository);
 
