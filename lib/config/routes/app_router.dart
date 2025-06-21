@@ -8,6 +8,8 @@ import 'package:skillwave/features/auth/presentation/screens/reset_password_Scre
 import 'package:skillwave/features/auth/presentation/screens/send_otp_screen.dart';
 import 'package:skillwave/features/auth/presentation/screens/signup_view.dart';
 import 'package:skillwave/features/auth/presentation/screens/verify_otp_screen.dart';
+import 'package:skillwave/features/blogScreen/domain/entity/blog_entity.dart';
+import 'package:skillwave/features/blogScreen/presentation/screens/blog_detail_page.dart';
 import 'package:skillwave/features/blogScreen/presentation/screens/blogs_screen.dart';
 import 'package:skillwave/features/coursesScreen/presentation/screens/course_screen.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/screen/dashboard_Screen.dart';

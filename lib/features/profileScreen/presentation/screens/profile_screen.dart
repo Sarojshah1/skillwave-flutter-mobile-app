@@ -57,13 +57,21 @@ class _ProfileViewState extends State<ProfileView> {
               return Column(
                 children: [
                   ProfileHeader(user: user),
-                  TabNavigation(activeTab: activeTab, onTabChange: handleTabChange),
+                  TabNavigation(
+                    activeTab: activeTab,
+                    onTabChange: handleTabChange,
+                  ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       child: Card(
                         elevation: 2,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(16),
                           child: renderTabContent(user),

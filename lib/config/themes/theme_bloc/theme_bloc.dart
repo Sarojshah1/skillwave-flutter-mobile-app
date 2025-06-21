@@ -31,8 +31,17 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
 
   Future<void> _onLoadTheme(LoadTheme event, Emitter<ThemeState> emit) async {
     final savedTheme = sharedPreferences.getString(SharedPrefKeys.themeMode);
-    final isLightMode = savedTheme == "light";
-    developer.log("ThemeBloc: Loaded theme from SharedPreferences: ${isLightMode ? 'Light' : 'Dark'}");
-    emit(isLightMode ? const ThemeLight() : const ThemeDark());
+
+    if (savedTheme == null) {
+      // First install: default to light and save it
+      await sharedPreferences.setString(SharedPrefKeys.themeMode, "light");
+      developer.log("ThemeBloc: No theme set. Defaulting to Light.");
+      emit(const ThemeLight());
+    } else {
+      final isLightMode = savedTheme == "light";
+      developer.log("ThemeBloc: Loaded theme from SharedPreferences: ${isLightMode ? 'Light' : 'Dark'}");
+      emit(isLightMode ? const ThemeLight() : const ThemeDark());
+    }
   }
+
 }

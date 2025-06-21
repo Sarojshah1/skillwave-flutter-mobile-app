@@ -9,8 +9,6 @@ abstract class InjectionModule {
   @preResolve
   Future<SharedPreferences> get prefs => SharedPreferences.getInstance();
   @lazySingleton
-  OnboardingCubit get onboardingCubit => OnboardingCubit();
-  @lazySingleton
   GlobalKey<ScaffoldMessengerState> get scaffoldMessengerKey => GlobalKey<ScaffoldMessengerState>();
   @lazySingleton
   GlobalKey<NavigatorState> get navigatorKey => GlobalKey<NavigatorState>();
