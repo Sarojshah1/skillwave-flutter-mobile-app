@@ -11,6 +11,7 @@ import 'package:skillwave/features/coursesScreen/presentation/widgets/course_des
 import 'package:skillwave/features/coursesScreen/presentation/widgets/course_reviews_section.dart';
 import 'package:skillwave/features/coursesScreen/presentation/widgets/course_includes_section.dart';
 import 'package:skillwave/features/coursesScreen/presentation/widgets/course_enroll_button.dart';
+import 'package:skillwave/features/coursesScreen/presentation/screens/payment_page.dart';
 
 @RoutePage()
 class CourseDetailsPage extends StatefulWidget {
@@ -32,7 +33,16 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
   }
 
   void _handleBuyNow() {
-    // todo: implement buy now logic here
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentPage(
+          amount: widget.course.price,
+          courseId: widget.course.id,
+          course: widget.course,
+        ),
+      ),
+    );
   }
 
   void _handleTabChanged(String tab) {
