@@ -7,6 +7,7 @@ import 'package:skillwave/features/SettingScreen/presentation/bloc/logout_bloc/l
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillwave/features/blogScreen/presentation/bloc/blog_bloc.dart';
 import 'package:skillwave/features/coursesScreen/presentation/bloc/course_bloc.dart';
+import 'package:skillwave/features/coursesScreen/presentation/bloc/payment_bloc.dart';
 import 'package:skillwave/features/coursesScreen/presentation/bloc/review_bloc/review_bloc.dart';
 import 'config/di/di.container.dart';
 import 'config/routes/app_router.dart';
@@ -51,6 +52,10 @@ class SkillWaveApp extends StatelessWidget {
             ),  BlocProvider<ReviewBloc>(
               create: (_) => getIt<ReviewBloc>(),
             ),
+             BlocProvider<PaymentBloc>(
+              create: (_) => getIt<PaymentBloc>(),
+            ),
+
 
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(

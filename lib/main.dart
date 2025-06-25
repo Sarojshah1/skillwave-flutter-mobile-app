@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'app.dart';
 import 'config/di/di.container.dart';
 import 'config/routes/app_router.dart';
@@ -11,8 +10,5 @@ void main() async {
   final appRouter = getIt<AppRouter>();
   final hiveService = HiveService();
   await hiveService.init();
-  runApp(
-    SkillWaveApp(appRouter: appRouter),
-  );
+  runApp(SkillWaveApp(appRouter: appRouter));
 }
-
