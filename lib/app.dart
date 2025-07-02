@@ -15,6 +15,7 @@ import 'config/themes/theme_bloc/theme_bloc.dart';
 import 'cores/services/snackbar_service.dart';
 import 'features/profileScreen/presentation/bloc/profile_bloc.dart';
 import 'features/welcomescreens/presentation/bloc/splashBloc/splash_bloc.dart';
+import 'cores/network/network_aware_app.dart';
 
 class SkillWaveApp extends StatelessWidget {
   final AppRouter appRouter;
@@ -33,43 +34,34 @@ class SkillWaveApp extends StatelessWidget {
         final pixelRatio = MediaQuery.of(context).devicePixelRatio;
         return MultiBlocProvider(
           providers: [
-            BlocProvider(create: (_) => getIt<ThemeBloc>()..add(LoadTheme()), lazy: false),
+            BlocProvider(
+              create: (_) => getIt<ThemeBloc>()..add(LoadTheme()),
+              lazy: false,
+            ),
             BlocProvider<SplashBloc>(
               create: (_) => getIt<SplashBloc>()..add(CheckAppStatusEvent()),
             ),
-            BlocProvider<AuthBloc>(
-              create: (_) => getIt<AuthBloc>()),
-            BlocProvider<LogoutBloc>(
-                create: (_) => getIt<LogoutBloc>()),
-            BlocProvider<ProfileBloc>(
-              create: (_) => getIt<ProfileBloc>(),
-            ),
-            BlocProvider<BlogBloc>(
-              create: (_) => getIt<BlogBloc>(),
-            ),
-            BlocProvider<CourseBloc>(
-              create: (_) => getIt<CourseBloc>(),
-            ),  BlocProvider<ReviewBloc>(
-              create: (_) => getIt<ReviewBloc>(),
-            ),
-             BlocProvider<PaymentBloc>(
-              create: (_) => getIt<PaymentBloc>(),
-            ),
-
-
+            BlocProvider<AuthBloc>(create: (_) => getIt<AuthBloc>()),
+            BlocProvider<LogoutBloc>(create: (_) => getIt<LogoutBloc>()),
+            BlocProvider<ProfileBloc>(create: (_) => getIt<ProfileBloc>()),
+            BlocProvider<BlogBloc>(create: (_) => getIt<BlogBloc>()),
+            BlocProvider<CourseBloc>(create: (_) => getIt<CourseBloc>()),
+            BlocProvider<ReviewBloc>(create: (_) => getIt<ReviewBloc>()),
+            BlocProvider<PaymentBloc>(create: (_) => getIt<PaymentBloc>()),
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(
-              builder: (context,themeState){
-            return MaterialApp.router(
-              title: 'SkillWave App',
-              routerConfig: appRouter.config(),
-              theme: lightTheme,
-              darkTheme: darkTheme,
-              themeMode: themeState.themeMode,
-              scaffoldMessengerKey: snackbarService.messengerKey,
-              debugShowCheckedModeBanner: false,
-            );
-          }),
+            builder: (context, themeState) {
+              return NetworkAwareApp(
+                routerConfig: appRouter.config(),
+                title: 'SkillWave App',
+                theme: lightTheme,
+                darkTheme: darkTheme,
+                themeMode: themeState.themeMode,
+                scaffoldMessengerKey: snackbarService.messengerKey,
+                debugShowCheckedModeBanner: false,
+              );
+            },
+          ),
         );
       },
     );

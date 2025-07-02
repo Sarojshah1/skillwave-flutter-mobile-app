@@ -36,4 +36,34 @@ class HiveService {
     final box = Hive.box(_userBoxName);
     return box.get('token') != null;
   }
+
+  Future<void> saveCredentials(String email, String password) async {
+    final box = Hive.box(_userBoxName);
+    await box.put('email', email);
+    await box.put('password', password);
+  }
+
+  String? getPassword() {
+    final box = Hive.box(_userBoxName);
+    return box.get('password');
+  }
+
+  Future<void> setBiometricEnabled(bool enabled) async {
+    final box = Hive.box(_userBoxName);
+    await box.put('biometric_enabled', enabled);
+  }
+
+  bool isBiometricEnabled() {
+    final box = Hive.box(_userBoxName);
+    return box.get('biometric_enabled', defaultValue: false);
+  }
+
+  Map<String, dynamic>? getBiometricData() {
+    final box = Hive.box(_userBoxName);
+    final data = box.get('biometric_data');
+    if (data is Map) {
+      return Map<String, dynamic>.from(data);
+    }
+    return null;
+  }
 }

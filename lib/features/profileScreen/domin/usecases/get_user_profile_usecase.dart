@@ -15,7 +15,11 @@ class GetUserProfileUseCase {
       final user = await repository.getUserData();
       return SkillWaveResponse.success(user);
     } catch (e) {
-      return SkillWaveResponse.failure(ApiFailure(message: e.toString()));
+      if (e is Failure) {
+        return SkillWaveResponse.failure(e);
+      } else {
+        return SkillWaveResponse.failure(ApiFailure(message: e.toString()));
+      }
     }
   }
 }

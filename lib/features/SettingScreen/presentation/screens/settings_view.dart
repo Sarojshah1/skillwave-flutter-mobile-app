@@ -19,7 +19,6 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-
   @override
   void initState() {
     super.initState();
@@ -29,112 +28,123 @@ class _SettingsViewState extends State<SettingsView> {
   void _loadThemePreference() {
     context.read<ThemeBloc>().add(LoadTheme());
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            floating: true,
-            snap: true,
-            centerTitle: true,
-            backgroundColor: SkillWaveAppColors.primary,
-            elevation: 8,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(24),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _loadThemePreference();
+          // Add any other settings reload logic here if needed
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              floating: true,
+              snap: true,
+              centerTitle: true,
+              backgroundColor: SkillWaveAppColors.primary,
+              elevation: 8,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(24),
+                ),
+              ),
+              title: const Text(
+                'Settings',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),
               ),
             ),
-            title: const Text(
-              'Settings',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 22,
-              ),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.all(16),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                SectionCard(children: [
-                  BlocBuilder<ThemeBloc, ThemeState>(
-                    builder: (context, themeState) {
-                      bool isDarkMode = themeState is ThemeDark;
+            SliverPadding(
+              padding: const EdgeInsets.all(16),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  SectionCard(
+                    children: [
+                      BlocBuilder<ThemeBloc, ThemeState>(
+                        builder: (context, themeState) {
+                          bool isDarkMode = themeState is ThemeDark;
 
-                      return SettingsSwitchTile(
-                        title: 'Dark Mode',
-                        subtitle: 'Toggle dark mode for better night-time reading',
-                        value: isDarkMode,
-                        onChanged: (value) {
-                          context.read<ThemeBloc>().add(ToggleTheme());
+                          return SettingsSwitchTile(
+                            title: 'Dark Mode',
+                            subtitle:
+                                'Toggle dark mode for better night-time reading',
+                            value: isDarkMode,
+                            onChanged: (value) {
+                              context.read<ThemeBloc>().add(ToggleTheme());
+                            },
+                          );
                         },
-                      );
-                    },
+                      ),
+                      SettingsDropdownTile(
+                        title: 'Language',
+                        subtitle: 'Select your preferred language',
+                        value: 'English',
+                        items: const ['English', 'Spanish', 'French', 'German'],
+                        onChanged: (value) {},
+                      ),
+                    ],
                   ),
-                  SettingsDropdownTile(
-                    title: 'Language',
-                    subtitle: 'Select your preferred language',
-                    value: 'English',
-                    items: const ['English', 'Spanish', 'French', 'German'],
-                    onChanged: (value) {},
+                  const SizedBox(height: 16),
+                  SectionCard(
+                    children: [
+                      SettingsNavigationTile(
+                        icon: Icons.notifications_outlined,
+                        title: 'Notifications',
+                        subtitle: 'Manage notifications',
+                        onTap: () {},
+                      ),
+                      SettingsNavigationTile(
+                        icon: Icons.lock_outline,
+                        title: 'Change Password',
+                        subtitle: 'Update your password',
+                        onTap: () {},
+                      ),
+                      SettingsNavigationTile(
+                        icon: Icons.security_outlined,
+                        title: 'Security',
+                        subtitle: 'Manage security settings',
+                        onTap: () {},
+                      ),
+                      SettingsNavigationTile(
+                        icon: Icons.privacy_tip_outlined,
+                        title: 'Privacy',
+                        subtitle: 'Privacy policy',
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  SectionCard(
+                    children: [
+                      SettingsNavigationTile(
+                        icon: Icons.info_outline,
+                        title: 'About Us',
+                        subtitle: 'Learn more about us',
+                        onTap: () {
+                          context.router.navigate(AboutUsRoute());
+                        },
+                      ),
+                      SettingsNavigationTile(
+                        icon: Icons.contact_mail_outlined,
+                        title: 'Contact Us',
+                        subtitle: 'Support and help',
+                        onTap: () {},
+                      ),
+                      SettingsNavigationTile(
+                        icon: Icons.logout,
+                        title: 'Logout',
+                        subtitle: 'Sign out of your account',
+                        iconColor: Colors.red,
+                        onTap: () => _showLogoutDialog(context),
+                      ),
+                    ],
                   ),
                 ]),
-                const SizedBox(height: 16),
-                SectionCard(children: [
-                  SettingsNavigationTile(
-                    icon: Icons.notifications_outlined,
-                    title: 'Notifications',
-                    subtitle: 'Manage notifications',
-                    onTap: () {},
-                  ),
-                  SettingsNavigationTile(
-                    icon: Icons.lock_outline,
-                    title: 'Change Password',
-                    subtitle: 'Update your password',
-                    onTap: () {},
-                  ),
-                  SettingsNavigationTile(
-                    icon: Icons.security_outlined,
-                    title: 'Security',
-                    subtitle: 'Manage security settings',
-                    onTap: () {},
-                  ),
-                  SettingsNavigationTile(
-                    icon: Icons.privacy_tip_outlined,
-                    title: 'Privacy',
-                    subtitle: 'Privacy policy',
-                    onTap: () {},
-                  ),
-                ]),
-                const SizedBox(height: 16),
-                SectionCard(children: [
-                  SettingsNavigationTile(
-                    icon: Icons.info_outline,
-                    title: 'About Us',
-                    subtitle: 'Learn more about us',
-                    onTap: () {
-                      context.router.navigate(AboutUsRoute());
-                    },
-                  ),
-                  SettingsNavigationTile(
-                    icon: Icons.contact_mail_outlined,
-                    title: 'Contact Us',
-                    subtitle: 'Support and help',
-                    onTap: () {},
-                  ),
-                  SettingsNavigationTile(
-                    icon: Icons.logout,
-                    title: 'Logout',
-                    subtitle: 'Sign out of your account',
-                    iconColor: Colors.red,
-                    onTap: () => _showLogoutDialog(context),
-                  ),
-                ]),
-              ]),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -182,7 +192,7 @@ class _SettingsViewState extends State<SettingsView> {
                     child: const Text('Logout'),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -190,8 +200,7 @@ class _SettingsViewState extends State<SettingsView> {
     );
 
     if (confirm == true) {
-     context.replaceRoute(LoginRoute());
+      context.replaceRoute(LoginRoute());
     }
   }
 }
-
