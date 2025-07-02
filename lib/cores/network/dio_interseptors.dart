@@ -5,7 +5,13 @@ import 'package:injectable/injectable.dart';
 class DioErrorInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    if (err.response != null) {
+    if (err.type == DioExceptionType.connectionError) {
+      err = DioException(
+        requestOptions: err.requestOptions,
+        error: 'No internet connection',
+        type: err.type,
+      );
+    } else if (err.response != null) {
       if (err.response!.statusCode! >= 300) {
         err = DioException(
           requestOptions: err.requestOptions,

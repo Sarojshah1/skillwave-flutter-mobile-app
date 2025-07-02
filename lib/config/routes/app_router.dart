@@ -19,6 +19,8 @@ import 'package:skillwave/features/homeScreen/presentation/screens/home_view.dar
 import 'package:skillwave/features/profileScreen/presentation/screens/profile_screen.dart';
 import 'package:skillwave/features/welcomescreens/presentation/screens/onboarding_Screen.dart';
 import 'package:skillwave/features/welcomescreens/presentation/screens/splash_Screen.dart';
+import 'package:skillwave/features/profileScreen/presentation/screens/change_password_screen.dart';
+import 'package:skillwave/features/profileScreen/presentation/screens/edit_profile_screen.dart';
 
 import '../../features/SettingScreen/presentation/screens/aboutus_page.dart';
 
@@ -36,21 +38,25 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: SplashRoute.page, initial: true),
     AutoRoute(page: OnboardingRoute.page),
     // auth routes
-    AutoRoute(page: LoginRoute.page,),
-    AutoRoute(page: SignupRoute.page,),
-    AutoRoute(page: ResetPasswordRoute.page,),
-    AutoRoute(page: SendOtpRoute.page,),
-    AutoRoute(page: VerifyOtpRoute.page,),
+    AutoRoute(page: LoginRoute.page),
+    AutoRoute(page: SignupRoute.page),
+    AutoRoute(page: ResetPasswordRoute.page),
+    AutoRoute(page: SendOtpRoute.page),
+    AutoRoute(page: VerifyOtpRoute.page),
     // dashboard routes
-    AutoRoute(page: HomeRoute.page,
-    children: [
-      AutoRoute(page: DashboardRoute.page, path: 'dashboard'),
-      AutoRoute(page: CoursesRoute.page, path: 'courses'),
-      AutoRoute(page: BlogsRoute.page, path: 'blogs'),
-      AutoRoute(page: ProfileRoute.page, path: 'profile'),
-      AutoRoute(page: SettingsRoute.page, path: 'settings'),
-    ]),
+    AutoRoute(
+      page: HomeRoute.page,
+      children: [
+        AutoRoute(page: DashboardRoute.page, path: 'dashboard'),
+        AutoRoute(page: CoursesRoute.page, path: 'courses'),
+        AutoRoute(page: BlogsRoute.page, path: 'blogs'),
+        AutoRoute(page: ProfileRoute.page, path: 'profile'),
+        AutoRoute(page: SettingsRoute.page, path: 'settings'),
+      ],
+    ),
     AutoRoute(page: AboutUsRoute.page),
-    AutoRoute(page: CourseDetailsRoute.page)
+    AutoRoute(page: CourseDetailsRoute.page),
+    AutoRoute(page: ChangePasswordRoute.page, path: '/change-password'),
+    AutoRoute(page: EditProfileRoute.page, path: '/edit-profile'),
   ];
 }
