@@ -7,6 +7,8 @@ import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/features/auth/domian/entity/login_entity.dart';
 import 'package:skillwave/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillwave/features/homeScreen/presentation/screens/home_view.dart';
+import 'package:skillwave/cores/services/api_service.dart';
+import 'package:skillwave/cores/network/hive_service.dart';
 
 import 'custom_primary_button.dart';
 import 'custom_social_button.dart';
@@ -14,23 +16,45 @@ import 'custom_text_button.dart';
 import 'custom_text_field.dart';
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+  final TextEditingController? emailController;
+  final TextEditingController? passwordController;
+  final BiometricHelper? biometricHelper;
+  final HiveService? hiveService;
+
+  const LoginForm({
+    Key? key,
+    this.emailController,
+    this.passwordController,
+    this.biometricHelper,
+    this.hiveService,
+  }) : super(key: key);
 
   @override
   State<LoginForm> createState() => _LoginFormState();
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  late final TextEditingController _emailController =
+      widget.emailController ?? TextEditingController();
+  late final TextEditingController _passwordController =
+      widget.passwordController ?? TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   bool _rememberMe = false;
   bool _obscureText = true;
 
   @override
+  void dispose() {
+    if (widget.emailController == null) _emailController.dispose();
+    if (widget.passwordController == null) _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final biometricHelper = widget.biometricHelper;
+    final hiveService = widget.hiveService;
 
     return Center(
       child: SingleChildScrollView(
@@ -159,7 +183,50 @@ class _LoginFormState extends State<LoginForm> {
                   );
                 },
               ),
-
+              SizedBox(height: 20.h),
+              // Add fingerprint login button if enabled
+              if ((hiveService?.isBiometricEnabled() ?? false) &&
+                  (biometricHelper != null))
+                Center(
+                  child: ElevatedButton.icon(
+                    icon: Icon(Icons.fingerprint),
+                    label: Text('Login with Fingerprint/Face'),
+                    onPressed: () async {
+                      final authenticated = await biometricHelper!
+                          .authenticateWithBiometrics();
+                      if (authenticated) {
+                        final email = hiveService!.getEmail();
+                        final password = hiveService!.getPassword();
+                        if (email != null && password != null) {
+                          context.read<AuthBloc>().add(
+                            LogInRequested(
+                              entity: LogInEntity(
+                                email: email,
+                                password: password,
+                              ),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'No credentials found. Please login with password first.',
+                              ),
+                            ),
+                          );
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Authentication failed. Try again or use password.',
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ),
               SizedBox(height: 20.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
