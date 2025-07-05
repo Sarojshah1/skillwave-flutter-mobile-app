@@ -80,6 +80,16 @@ class SocketService {
       _logger.i('🔄 Socket reconnection attempt: $attemptNumber');
     });
 
+    _socket!.onReconnectError((error) {
+      _logger.e('🚨 Socket reconnection error: $error');
+      _isConnected = false;
+    });
+
+    _socket!.onReconnectFailed((_) {
+      _logger.e('🚨 Socket reconnection failed');
+      _isConnected = false;
+    });
+
     // Real-time events
     _socket!.on('new-comment', (data) {
       _logger.i('💬 New comment received: $data');
@@ -117,31 +127,57 @@ class SocketService {
   void _connect() {
     if (_socket != null && !_isConnected) {
       _logger.i('🔌 Attempting to connect to socket...');
-      _socket!.connect();
+      try {
+        _socket!.connect();
+      } catch (e) {
+        _logger.e('Error connecting to socket: $e');
+      }
+    }
+  }
+
+  // Check if socket is ready for operations
+  bool get isReady => _socket != null && _isConnected;
+
+  // Attempt to reconnect if disconnected
+  void attemptReconnect() {
+    if (_socket != null && !_isConnected) {
+      _logger.i('🔄 Attempting to reconnect socket...');
+      _connect();
     }
   }
 
   void disconnect() {
     if (_socket != null) {
-      _logger.i('🔌 Disconnecting socket...');
-      _socket!.disconnect();
-      _socket!.dispose();
-      _socket = null;
+      try {
+        _logger.i('🔌 Disconnecting socket...');
+        _socket!.disconnect();
+        _socket!.dispose();
+        _socket = null;
+        _isConnected = false;
+        _logger.i('🔌 Socket disconnected successfully');
+      } catch (e) {
+        _logger.e('Error disconnecting socket: $e');
+        _socket = null;
+        _isConnected = false;
+      }
     }
-    _isConnected = false;
   }
 
   // Join a specific post room to listen for updates
   Future<void> joinPostRoom(String postId) async {
     if (_socket != null && _isConnected) {
-      final userIdResult = await _userPrefs.getUserId();
-      final userId = userIdResult.fold(
-        (_) => 'anonymous',
-        (id) => id ?? 'anonymous',
-      );
+      try {
+        final userIdResult = await _userPrefs.getUserId();
+        final userId = userIdResult.fold(
+          (_) => 'anonymous',
+          (id) => id ?? 'anonymous',
+        );
 
-      _socket!.emit('joinForumPost', {'postId': postId, 'userId': userId});
-      _logger.i('Joined forum post room: $postId with userId: $userId');
+        _socket!.emit('joinForumPost', {'postId': postId, 'userId': userId});
+        _logger.i('Joined forum post room: $postId with userId: $userId');
+      } catch (e) {
+        _logger.e('Error joining post room: $e');
+      }
     } else {
       _logger.w('⚠️ Cannot join post room: Socket not connected');
     }
@@ -150,14 +186,18 @@ class SocketService {
   // Leave a specific post room
   Future<void> leavePostRoom(String postId) async {
     if (_socket != null && _isConnected) {
-      final userIdResult = await _userPrefs.getUserId();
-      final userId = userIdResult.fold(
-        (_) => 'anonymous',
-        (id) => id ?? 'anonymous',
-      );
+      try {
+        final userIdResult = await _userPrefs.getUserId();
+        final userId = userIdResult.fold(
+          (_) => 'anonymous',
+          (id) => id ?? 'anonymous',
+        );
 
-      _socket!.emit('leaveForumPost', {'postId': postId, 'userId': userId});
-      _logger.i('Left forum post room: $postId with userId: $userId');
+        _socket!.emit('leaveForumPost', {'postId': postId, 'userId': userId});
+        _logger.i('Left forum post room: $postId with userId: $userId');
+      } catch (e) {
+        _logger.e('Error leaving post room: $e');
+      }
     } else {
       _logger.w('⚠️ Cannot leave post room: Socket not connected');
     }
