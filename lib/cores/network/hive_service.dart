@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:skillwave/features/dashboardScreen/data/datasources/dashboard_local_datasource.dart';
 
 class HiveService {
   static const String _userBoxName = 'userBox';

@@ -28,11 +28,12 @@ class JoinPostRoom extends RealtimeCommentEvent {
 
 class LeavePostRoom extends RealtimeCommentEvent {
   final String postId;
+  final bool forceLeave;
 
-  const LeavePostRoom({required this.postId});
+  const LeavePostRoom({required this.postId, this.forceLeave = false});
 
   @override
-  List<Object> get props => [postId];
+  List<Object?> get props => [postId, forceLeave];
 }
 
 class NewCommentReceived extends RealtimeCommentEvent {
@@ -53,4 +54,11 @@ class NewReplyReceived extends RealtimeCommentEvent {
   List<Object> get props => [data];
 }
 
-class DisposeSocket extends RealtimeCommentEvent {}
+class DisposeSocket extends RealtimeCommentEvent {
+  final bool forceDispose;
+
+  const DisposeSocket({this.forceDispose = false});
+
+  @override
+  List<Object?> get props => [forceDispose];
+}
