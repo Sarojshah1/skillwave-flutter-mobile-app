@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
+import 'package:logger/logger.dart';
 import 'package:skillwave/config/constants/api_endpoints.dart';
 import 'package:skillwave/config/di/di.container.dart';
 import 'package:skillwave/cores/services/socket_service.dart';
@@ -13,6 +14,7 @@ part 'realtime_comment_state.dart';
 class RealtimeCommentBloc
     extends Bloc<RealtimeCommentEvent, RealtimeCommentState> {
   final SocketService _socketService = getIt<SocketService>();
+  final Logger _logger = Logger();
   StreamSubscription<Map<String, dynamic>>? _commentSubscription;
   StreamSubscription<Map<String, dynamic>>? _replySubscription;
 
@@ -43,15 +45,22 @@ class RealtimeCommentBloc
 
       emit(RealtimeCommentConnected());
     } catch (e) {
-      emit(RealtimeCommentError('Failed to initialize socket: $e')); 
+      emit(RealtimeCommentError('Failed to initialize socket: $e'));
     }
   }
 
   void _onJoinPostRoom(JoinPostRoom event, Emitter<RealtimeCommentState> emit) {
     try {
-      _socketService.joinPostRoom(event.postId);
-      emit(RealtimeCommentJoinedRoom(event.postId));
+      // Only try to join if socket is connected
+      if (_socketService.isConnected) {
+        _socketService.joinPostRoom(event.postId);
+        emit(RealtimeCommentJoinedRoom(event.postId));
+      } else {
+        _logger.w('Socket not connected, skipping join post room');
+        emit(RealtimeCommentError('Socket not connected'));
+      }
     } catch (e) {
+      _logger.e('Failed to join post room: $e');
       emit(RealtimeCommentError('Failed to join post room: $e'));
     }
   }
@@ -61,9 +70,16 @@ class RealtimeCommentBloc
     Emitter<RealtimeCommentState> emit,
   ) {
     try {
-      _socketService.leavePostRoom(event.postId);
-      emit(RealtimeCommentLeftRoom(event.postId));
+      // Only try to leave if socket is connected
+      if (_socketService.isConnected) {
+        _socketService.leavePostRoom(event.postId);
+        emit(RealtimeCommentLeftRoom(event.postId));
+      } else {
+        _logger.w('Socket not connected, skipping leave post room');
+        emit(RealtimeCommentLeftRoom(event.postId));
+      }
     } catch (e) {
+      _logger.e('Failed to leave post room: $e');
       emit(RealtimeCommentError('Failed to leave post room: $e'));
     }
   }

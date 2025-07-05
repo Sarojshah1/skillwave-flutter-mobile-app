@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:injectable/injectable.dart';
 import 'package:skillwave/cores/failure/failure.dart';
 import 'package:skillwave/cores/network/models/skillwave_response.dart';
@@ -11,10 +12,13 @@ class CreatePostUseCase {
 
   CreatePostUseCase(this.repository);
 
-  Future<SkillWaveResponse<PostEntity>> call(CreatePostDto dto) async {
+  Future<SkillWaveResponse<String>> call(
+    CreatePostDto dto, {
+    List<File>? images,
+  }) async {
     try {
-      final post = await repository.createPost(dto);
-      return SkillWaveResponse.success(post);
+      final post = await repository.createPost(dto, images: images);
+      return SkillWaveResponse.success("post created successfully");
     } catch (e) {
       if (e is Failure) {
         return SkillWaveResponse.failure(e);

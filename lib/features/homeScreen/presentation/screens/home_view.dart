@@ -24,6 +24,7 @@ class _HomeViewState extends State<HomeView> {
   StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
   double _shakeThreshold = 10.0;
   DateTime? _lastShakeTime;
+  bool _isDialogShowing = false;
 
   @override
   void initState() {
@@ -37,12 +38,13 @@ class _HomeViewState extends State<HomeView> {
     final double acceleration = sqrt(
       event.x * event.x + event.y * event.y + event.z * event.z,
     );
-    if (acceleration > _shakeThreshold) {
+    if (acceleration > _shakeThreshold && !_isDialogShowing) {
       _showExitDialog();
     }
   }
 
   void _showExitDialog() {
+    _isDialogShowing = true;
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -125,7 +127,10 @@ class _HomeViewState extends State<HomeView> {
                         ),
                         padding: EdgeInsets.symmetric(vertical: 14),
                       ),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _isDialogShowing = false;
+                      },
                       child: Text(
                         'Cancel',
                         style: TextStyle(
@@ -168,6 +173,7 @@ class _HomeViewState extends State<HomeView> {
 
   void _exitApp() {
     Navigator.of(context).pop();
+    _isDialogShowing = false;
     Future.delayed(Duration(milliseconds: 200), () {
       try {
         SystemNavigator.pop();
