@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/config/themes/app_text_styles.dart';
@@ -47,22 +48,20 @@ class PostCardContent extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 12),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            post.images.first,
-            width: double.infinity,
-            height: 200,
+          child: CachedNetworkImage(
+            imageUrl: "http://10.0.2.2:3000/${post.images.first}",
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                width: double.infinity,
-                height: 200,
-                color: SkillWaveAppColors.lightGreyBackground,
-                child: const Icon(
-                  Icons.image_not_supported,
-                  color: SkillWaveAppColors.textDisabled,
-                ),
-              );
-            },
+            placeholder: (context, url) => Container(
+              color: SkillWaveAppColors.lightGreyBackground,
+              child: const Center(child: CircularProgressIndicator()),
+            ),
+            errorWidget: (context, url, error) => Container(
+              color: SkillWaveAppColors.lightGreyBackground,
+              child: const Icon(
+                Icons.image_not_supported,
+                color: SkillWaveAppColors.textDisabled,
+              ),
+            ),
           ),
         ),
       );
@@ -74,9 +73,9 @@ class PostCardContent extends StatelessWidget {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: post.images.length == 2 ? 2 : 3,
-          crossAxisSpacing: 4,
-          mainAxisSpacing: 4,
+          crossAxisCount: post.images.length == 2 ? 2 : 2,
+          crossAxisSpacing: 2,
+          mainAxisSpacing: 2,
           childAspectRatio: 1,
         ),
         itemCount: post.images.length > 6 ? 6 : post.images.length,
@@ -85,20 +84,20 @@ class PostCardContent extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             child: Stack(
               children: [
-                Image.network(
-                  post.images[index],
-                  width: double.infinity,
-                  height: double.infinity,
+                CachedNetworkImage(
+                  imageUrl: "http://10.0.2.2:3000/${post.images[index]}",
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: SkillWaveAppColors.lightGreyBackground,
-                      child: const Icon(
-                        Icons.image_not_supported,
-                        color: SkillWaveAppColors.textDisabled,
-                      ),
-                    );
-                  },
+                  placeholder: (context, url) => Container(
+                    color: SkillWaveAppColors.lightGreyBackground,
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: SkillWaveAppColors.lightGreyBackground,
+                    child: const Icon(
+                      Icons.image_not_supported,
+                      color: SkillWaveAppColors.textDisabled,
+                    ),
+                  ),
                 ),
                 if (index == 5 && post.images.length > 6)
                   Container(
