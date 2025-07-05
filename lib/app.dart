@@ -9,6 +9,7 @@ import 'package:skillwave/features/blogScreen/presentation/bloc/blog_bloc.dart';
 import 'package:skillwave/features/coursesScreen/presentation/bloc/course_bloc.dart';
 import 'package:skillwave/features/coursesScreen/presentation/bloc/payment_bloc.dart';
 import 'package:skillwave/features/coursesScreen/presentation/bloc/review_bloc/review_bloc.dart';
+import 'package:skillwave/features/dashboardScreen/presentation/bloc/realtime_comment_bloc.dart';
 import 'config/di/di.container.dart';
 import 'config/routes/app_router.dart';
 import 'config/themes/theme_bloc/theme_bloc.dart';
@@ -83,6 +84,9 @@ class SkillWaveApp extends StatelessWidget {
             ),
             BlocProvider<CreateReplyBloc>(
               create: (_) => getIt<CreateReplyBloc>(),
+            ),
+            BlocProvider<RealtimeCommentBloc>(
+              create: (_) => getIt<RealtimeCommentBloc>(),
             ),
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(

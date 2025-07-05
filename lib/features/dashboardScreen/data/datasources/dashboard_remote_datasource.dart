@@ -85,6 +85,7 @@ class DashboardRemoteDatasource {
   }
 
   Future<void> createComment(String postId, CreateCommentDto dto) async {
+    print(dto.toJson());
     try {
       await dio.post(
         ApiEndpoints.getpostcommentUrl(postId),
