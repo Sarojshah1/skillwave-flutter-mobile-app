@@ -57,4 +57,63 @@ class ProfileRemoteDatasource {
       throw Exception('Failed to update profile picture: ${e.toString()}');
     }
   }
+
+  Future<void> updateProfile({
+    required String name,
+    required String email,
+    required String bio,
+  }) async {
+    try {
+      await dio.put(
+        ApiEndpoints.updateDetails,
+        data: {'name': name, 'email': email, 'bio': bio},
+      );
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.unknown ||
+          e.error is SocketException) {
+        throw ApiFailure(
+          message: 'No internet connection. Please check your network.',
+        );
+      } else if (e.response != null) {
+        throw ApiFailure(
+          message: e.response?.data['message'] ?? 'Failed to update profile',
+          statusCode: e.response?.statusCode,
+        );
+      } else {
+        throw ApiFailure(message: 'Failed to update profile: ${e.message}');
+      }
+    }
+  }
+
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    try {
+      await dio.put(
+        ApiEndpoints.changePassword,
+        data: {
+          'oldPassword': currentPassword,
+          'newPassword': newPassword,
+        },
+      );
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.unknown ||
+          e.error is SocketException) {
+        throw ApiFailure(
+          message: 'No internet connection. Please check your network.',
+        );
+      } else if (e.response != null) {
+        throw ApiFailure(
+          message: e.response?.data['message'] ?? 'Failed to change password',
+          statusCode: e.response?.statusCode,
+        );
+      } else {
+        throw ApiFailure(message: 'Failed to change password: ${e.message}');
+      }
+    }
+  }
 }
