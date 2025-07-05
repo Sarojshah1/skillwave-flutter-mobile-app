@@ -98,102 +98,119 @@ class _ProfileViewState extends State<ProfileView> {
     final List<Map<String, dynamic>> buttons = [
       {
         'icon': Icons.info_outline,
-        'label': 'Info',
+        'label': 'Personal Information',
         'section': 'info',
         'color': SkillWaveAppColors.primary,
+        'subtitle': 'View your personal details',
       },
       {
         'icon': Icons.menu_book,
-        'label': 'Courses',
+        'label': 'My Courses',
         'section': 'courses',
         'color': Colors.blueAccent,
+        'subtitle': 'View your enrolled courses',
       },
       {
         'icon': Icons.groups,
         'label': 'Study Groups',
         'section': 'studygroups',
         'color': Colors.deepPurple,
+        'subtitle': 'Join or create study groups',
       },
       {
         'icon': Icons.workspace_premium_outlined,
         'label': 'Certificates',
         'section': 'certificates',
         'color': Colors.amber,
+        'subtitle': 'View your earned certificates',
       },
       {
         'icon': Icons.quiz_outlined,
         'label': 'Quizzes',
         'section': 'quizzes',
         'color': Colors.purpleAccent,
+        'subtitle': 'Take quizzes and assessments',
       },
       {
         'icon': Icons.settings_outlined,
         'label': 'Settings',
         'section': 'settings',
         'color': Colors.green,
+        'subtitle': 'App preferences and settings',
       },
       {
         'icon': Icons.lock_reset,
         'label': 'Change Password',
         'section': 'changepassword',
         'color': Colors.redAccent,
+        'subtitle': 'Update your password',
       },
       {
         'icon': Icons.edit,
         'label': 'Edit Profile',
         'section': 'editprofile',
         'color': Colors.teal,
+        'subtitle': 'Modify your profile information',
       },
     ];
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      child: GridView.count(
-        crossAxisCount: 3,
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ListView.separated(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        mainAxisSpacing: 16,
-        crossAxisSpacing: 16,
-        children: buttons.map((btn) {
-          return GestureDetector(
-            onTap: () => _onButtonTap(btn['section'], user),
-            child: Container(
+        itemCount: buttons.length,
+        separatorBuilder: (context, index) =>
+            const Divider(height: 1, indent: 16, endIndent: 16),
+        itemBuilder: (context, index) {
+          final btn = buttons[index];
+          return ListTile(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 8,
+            ),
+            leading: Container(
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    btn['color'].withOpacity(0.85),
-                    btn['color'].withOpacity(0.5),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(18),
-                boxShadow: [
-                  BoxShadow(
-                    color: btn['color'].withOpacity(0.18),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
+                color: btn['color'].withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(btn['icon'], size: 36, color: Colors.white),
-                  const SizedBox(height: 10),
-                  Text(
-                    btn['label'],
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      letterSpacing: 1.1,
-                    ),
-                  ),
-                ],
+              child: Icon(btn['icon'], color: btn['color'], size: 24),
+            ),
+            title: Text(
+              btn['label'],
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: Colors.black87,
               ),
             ),
+            subtitle: Text(
+              btn['subtitle'],
+              style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+            ),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.grey[400],
+              size: 16,
+            ),
+            onTap: () => _onButtonTap(btn['section'], user),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           );
-        }).toList(),
+        },
       ),
     );
   }
@@ -215,7 +232,7 @@ class _ProfileViewState extends State<ProfileView> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   children: [
-                    SizedBox(height: 60.h),
+                    SizedBox(height: 80.h),
                     ProfileHeader(user: user),
                     _buildProfileButtons(user),
                   ],
