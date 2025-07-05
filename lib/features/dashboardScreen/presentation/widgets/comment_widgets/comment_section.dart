@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/config/themes/app_text_styles.dart';
@@ -7,6 +8,7 @@ import 'package:skillwave/features/dashboardScreen/presentation/bloc/create_comm
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/create_comment_bloc/create_comment_events.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/create_comment_bloc/create_comment_state.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/realtime_comment_bloc.dart';
+import 'package:skillwave/features/dashboardScreen/presentation/utils/global_comment_store.dart';
 import 'comment_item.dart';
 import 'comment_input.dart';
 
@@ -27,15 +29,28 @@ class CommentSection extends StatefulWidget {
 class _CommentSectionState extends State<CommentSection> {
   bool _showAllComments = false;
   late RealtimeCommentBloc _realtimeBloc;
+  late GlobalCommentStore _commentStore;
   List<CommentEntity> _comments = [];
 
   @override
   void initState() {
     super.initState();
     _realtimeBloc = context.read<RealtimeCommentBloc>();
-    // Sort comments by creation date (newest first)
-    _comments = List.from(widget.comments)
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    _commentStore = GlobalCommentStore();
+
+    // Initialize comments from global store or widget
+    final globalComments = _commentStore.getComments(widget.postId);
+    if (globalComments.isNotEmpty) {
+      _comments = List.from(globalComments)
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      print('✅ Loaded comments from global store: ${_comments.length}');
+    } else {
+      // Use widget comments if no global comments and initialize global store
+      _comments = List.from(widget.comments)
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      _commentStore.initializeComments(widget.postId, _comments);
+      print('✅ Initialized comments from widget: ${_comments.length}');
+    }
 
     // Use a post-frame callback to ensure the widget is properly mounted
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -122,6 +137,8 @@ class _CommentSectionState extends State<CommentSection> {
                 replies: [], // Initialize with empty replies
               );
 
+              // Add to global store and local state
+              _commentStore.addComment(widget.postId, newComment);
               setState(() {
                 _comments.add(newComment);
                 _comments.sort((a, b) => b.createdAt.compareTo(a.createdAt));
@@ -217,6 +234,8 @@ class _CommentSectionState extends State<CommentSection> {
                     replies: updatedReplies,
                   );
                   _comments[commentIndex] = updatedComment;
+                  // Add reply to global store
+                  _commentStore.addReply(widget.postId, commentId, newReply);
                   print(
                     '✅ Reply added to comment. Total replies: ${updatedReplies.length}',
                   );
