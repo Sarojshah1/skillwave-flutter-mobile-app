@@ -92,25 +92,33 @@ class _SettingsViewState extends State<SettingsView> {
                         icon: Icons.notifications_outlined,
                         title: 'Notifications',
                         subtitle: 'Manage notifications',
-                        onTap: () {},
+                        onTap: () {
+                          context.router.navigate(NotificationSettingsRoute());
+                        },
                       ),
                       SettingsNavigationTile(
                         icon: Icons.lock_outline,
                         title: 'Change Password',
                         subtitle: 'Update your password',
-                        onTap: () {},
+                        onTap: () {
+                          context.router.navigate(ChangePasswordRoute());
+                        },
                       ),
                       SettingsNavigationTile(
                         icon: Icons.security_outlined,
                         title: 'Security',
                         subtitle: 'Manage security settings',
-                        onTap: () {},
+                        onTap: () {
+                          context.router.navigate(SecuritySettingsRoute());
+                        },
                       ),
                       SettingsNavigationTile(
                         icon: Icons.privacy_tip_outlined,
                         title: 'Privacy',
                         subtitle: 'Privacy policy',
-                        onTap: () {},
+                        onTap: () {
+                          context.router.navigate(PrivacySettingsRoute());
+                        },
                       ),
                     ],
                   ),
@@ -129,7 +137,9 @@ class _SettingsViewState extends State<SettingsView> {
                         icon: Icons.contact_mail_outlined,
                         title: 'Contact Us',
                         subtitle: 'Support and help',
-                        onTap: () {},
+                        onTap: () {
+                          context.router.navigate(ContactUsRoute());
+                        },
                       ),
                       SettingsNavigationTile(
                         icon: Icons.logout,

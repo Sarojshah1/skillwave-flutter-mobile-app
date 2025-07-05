@@ -25,6 +25,10 @@ import 'package:skillwave/features/profileScreen/presentation/screens/change_pas
 import 'package:skillwave/features/profileScreen/presentation/screens/edit_profile_screen.dart';
 
 import '../../features/SettingScreen/presentation/screens/aboutus_page.dart';
+import '../../features/SettingScreen/presentation/screens/notification_settings_screen.dart';
+import '../../features/SettingScreen/presentation/screens/security_settings_screen.dart';
+import '../../features/SettingScreen/presentation/screens/privacy_settings_screen.dart';
+import '../../features/SettingScreen/presentation/screens/contact_us_screen.dart';
 
 part 'app_router.gr.dart';
 
@@ -61,5 +65,12 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: CreatePostRoute.page, path: '/create-post'),
     AutoRoute(page: ChangePasswordRoute.page, path: '/change-password'),
     AutoRoute(page: EditProfileRoute.page, path: '/edit-profile'),
+    AutoRoute(
+      page: NotificationSettingsRoute.page,
+      path: '/notification-settings',
+    ),
+    AutoRoute(page: SecuritySettingsRoute.page, path: '/security-settings'),
+    AutoRoute(page: PrivacySettingsRoute.page, path: '/privacy-settings'),
+    AutoRoute(page: ContactUsRoute.page, path: '/contact-us'),
   ];
 }

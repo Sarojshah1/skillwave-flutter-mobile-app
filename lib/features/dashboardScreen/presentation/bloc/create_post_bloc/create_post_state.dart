@@ -13,12 +13,12 @@ class CreatePostInitial extends CreatePostState {}
 class CreatePostLoading extends CreatePostState {}
 
 class CreatePostLoaded extends CreatePostState {
-  final PostEntity post;
+  final String message;
 
-  const CreatePostLoaded({required this.post});
+  const CreatePostLoaded({required this.message});
 
   @override
-  List<Object?> get props => [post];
+  List<Object?> get props => [message];
 }
 
 class CreatePostError extends CreatePostState {
