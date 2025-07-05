@@ -15,6 +15,8 @@ import 'package:skillwave/features/coursesScreen/domain/entity/course_entity.dar
 import 'package:skillwave/features/coursesScreen/presentation/screens/course_detail_page.dart';
 import 'package:skillwave/features/coursesScreen/presentation/screens/course_screen.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/screen/dashboard_Screen.dart';
+import 'package:skillwave/features/dashboardScreen/presentation/screens/dashboard_screen.dart';
+import 'package:skillwave/features/dashboardScreen/presentation/screens/create_post_screen.dart';
 import 'package:skillwave/features/homeScreen/presentation/screens/home_view.dart';
 import 'package:skillwave/features/profileScreen/presentation/screens/profile_screen.dart';
 import 'package:skillwave/features/welcomescreens/presentation/screens/onboarding_Screen.dart';
@@ -56,6 +58,7 @@ class AppRouter extends RootStackRouter {
     ),
     AutoRoute(page: AboutUsRoute.page),
     AutoRoute(page: CourseDetailsRoute.page),
+    AutoRoute(page: CreatePostRoute.page, path: '/create-post'),
     AutoRoute(page: ChangePasswordRoute.page, path: '/change-password'),
     AutoRoute(page: EditProfileRoute.page, path: '/edit-profile'),
   ];
