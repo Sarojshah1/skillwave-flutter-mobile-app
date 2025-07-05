@@ -14,37 +14,49 @@ class PostCardActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _buildActionButton(
-          context,
-          icon: Icons.favorite_border,
-          activeIcon: Icons.favorite,
-          label: '${post.likes.length}',
-          isActive: post.likes.isNotEmpty, // TODO: Check if current user liked
-          onTap: () => _handleLike(context),
-        ),
-        const SizedBox(width: 16),
-        _buildActionButton(
-          context,
-          icon: Icons.comment_outlined,
-          label: '${post.comments.length}',
-          onTap: () => _handleComment(context),
-        ),
-        const SizedBox(width: 16),
-        _buildActionButton(
-          context,
-          icon: Icons.share_outlined,
-          label: 'Share',
-          onTap: () => _handleShare(context),
-        ),
-        const Spacer(),
-        _buildActionButton(
-          context,
-          icon: Icons.bookmark_border,
-          onTap: () => _handleBookmark(context),
-        ),
-      ],
+    return BlocBuilder<LikePostBloc, LikePostState>(
+      builder: (context, state) {
+        final isLoading = state is LikePostLoading;
+        final isLiked =
+            post.likes.isNotEmpty; // TODO: Check if current user liked
+
+        return Column(
+          children: [
+            // Action buttons grid
+            Row(
+              children: [
+                Expanded(
+                  child: _buildActionButton(
+                    context,
+                    icon: Icons.favorite_border,
+                    activeIcon: Icons.favorite,
+                    label: 'Like',
+                    isActive: isLiked,
+                    isLoading: isLoading,
+                    onTap: () => _handleLike(context),
+                  ),
+                ),
+                Expanded(
+                  child: _buildActionButton(
+                    context,
+                    icon: Icons.chat_bubble_outline,
+                    label: 'Comment',
+                    onTap: () => _handleComment(context),
+                  ),
+                ),
+                Expanded(
+                  child: _buildActionButton(
+                    context,
+                    icon: Icons.share_outlined,
+                    label: 'Share',
+                    onTap: () => _handleShare(context),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -52,55 +64,51 @@ class PostCardActions extends StatelessWidget {
     BuildContext context, {
     required IconData icon,
     IconData? activeIcon,
-    String? label,
+    required String label,
     bool isActive = false,
+    bool isLoading = false,
     required VoidCallback onTap,
   }) {
-    return BlocBuilder<LikePostBloc, LikePostState>(
-      builder: (context, state) {
-        final isLoading = state is LikePostLoading;
-
-        return InkWell(
-          onTap: isLoading ? null : onTap,
-          borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (isLoading)
-                  const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        SkillWaveAppColors.primary,
-                      ),
-                    ),
-                  )
-                else
-                  Icon(
-                    isActive ? (activeIcon ?? icon) : icon,
-                    size: 20,
-                    color: isActive
-                        ? SkillWaveAppColors.red
-                        : SkillWaveAppColors.textSecondary,
+    return InkWell(
+      onTap: isLoading ? null : onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (isLoading)
+              const SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    SkillWaveAppColors.primary,
                   ),
-                if (label != null) ...[
-                  const SizedBox(width: 4),
-                  Text(
-                    label,
-                    style: AppTextStyles.labelMedium.copyWith(
-                      color: SkillWaveAppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ],
+                ),
+              )
+            else
+              Icon(
+                isActive ? (activeIcon ?? icon) : icon,
+                size: 20,
+                color: isActive
+                    ? const Color(0xFF6366F1) // Indigo color
+                    : SkillWaveAppColors.textSecondary,
+              ),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: isActive
+                    ? const Color(0xFF6366F1) // Indigo color
+                    : SkillWaveAppColors.textSecondary,
+                fontWeight: isActive ? FontWeight.w500 : FontWeight.w400,
+              ),
             ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
 
@@ -109,7 +117,7 @@ class PostCardActions extends StatelessWidget {
   }
 
   void _handleComment(BuildContext context) {
-    // TODO: Show comment input
+    // TODO: Focus on comment input
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Comment functionality coming soon!')),
     );
@@ -119,13 +127,6 @@ class PostCardActions extends StatelessWidget {
     // TODO: Implement share functionality
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Share functionality coming soon!')),
-    );
-  }
-
-  void _handleBookmark(BuildContext context) {
-    // TODO: Implement bookmark functionality
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Bookmark functionality coming soon!')),
     );
   }
 }
