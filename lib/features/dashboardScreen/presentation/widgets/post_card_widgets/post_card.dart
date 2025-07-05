@@ -28,8 +28,9 @@ class PostCard extends StatelessWidget {
         BlocProvider<CreateCommentBloc>(
           create: (context) => context.read<CreateCommentBloc>(),
         ),
-        BlocProvider<RealtimeCommentBloc>(
-          create: (context) => context.read<RealtimeCommentBloc>(),
+        // Use the shared RealtimeCommentBloc from the parent
+        BlocProvider<RealtimeCommentBloc>.value(
+          value: context.read<RealtimeCommentBloc>(),
         ),
       ],
       child: Card(

@@ -1,49 +1,106 @@
 import 'dart:io';
 import 'package:injectable/injectable.dart';
 import '../datasources/dashboard_remote_datasource.dart';
+import '../datasources/dashboard_local_datasource.dart';
 import '../../domin/repository/dashboard_repository.dart';
 import '../models/post_dto.dart';
 import '../../domin/entity/post_entity.dart';
 
 @LazySingleton(as: DashboardRepository)
 class DashboardRepositoryImpl implements DashboardRepository {
-  final DashboardRemoteDatasource datasource;
+  final DashboardRemoteDatasource remoteDatasource;
+  final DashboardLocalDatasource localDatasource;
 
-  DashboardRepositoryImpl(this.datasource);
+  DashboardRepositoryImpl(this.remoteDatasource, this.localDatasource);
 
   @override
   Future<PostsResponseEntity> getPosts(GetPostsDto dto) async {
-    return await datasource.getPosts(dto);
+    try {
+      // Try to get data from remote first
+      final remoteData = await remoteDatasource.getPosts(dto);
+
+      // Ensure local datasource is initialized before caching
+      await localDatasource.init();
+
+      // Cache the posts locally
+      await localDatasource.cachePosts(remoteData.posts);
+
+      return remoteData;
+    } catch (e) {
+      // If remote fails, try to get from local cache
+      // Ensure local datasource is initialized
+      await localDatasource.init();
+
+      final cachedPosts = localDatasource.getValidCachedPosts();
+
+      if (cachedPosts.isNotEmpty) {
+        // Return cached data with offline indicator
+        return PostsResponseEntity(
+          posts: cachedPosts,
+          totalPosts: cachedPosts.length,
+          currentPage: 1,
+          totalPages: 1,
+          recommendations: {},
+          userTags: [],
+        );
+      }
+      rethrow;
+    }
   }
 
   @override
   Future<PostEntity> getPostById(String id) async {
-    return await datasource.getPostById(id);
+    try {
+
+      final remoteData = await remoteDatasource.getPostById(id);
+
+      // Ensure local datasource is initialized before caching
+      await localDatasource.init();
+
+      // Cache the single post locally
+      await localDatasource.cachePosts([remoteData]);
+
+      return remoteData;
+    } catch (e) {
+      // If remote fails, try to get from local cache
+      // Ensure local datasource is initialized
+      await localDatasource.init();
+
+      final cachedPosts = localDatasource.getValidCachedPosts();
+      final cachedPost = cachedPosts.where((post) => post.id == id).firstOrNull;
+
+      if (cachedPost != null) {
+        return cachedPost;
+      }
+
+      // If no cached data, rethrow the original error
+      rethrow;
+    }
   }
 
   @override
   Future<void> createPost(CreatePostDto dto, {List<File>? images}) async {
-    return await datasource.createPost(dto, images: images);
+    return await remoteDatasource.createPost(dto, images: images);
   }
 
   @override
   Future<PostEntity> updatePost(String id, UpdatePostDto dto) async {
-    return await datasource.updatePost(id, dto);
+    return await remoteDatasource.updatePost(id, dto);
   }
 
   @override
   Future<void> deletePost(String id) async {
-    return await datasource.deletePost(id);
+    return await remoteDatasource.deletePost(id);
   }
 
   @override
   Future<void> likePost(String postId) async {
-    return await datasource.likePost(postId);
+    return await remoteDatasource.likePost(postId);
   }
 
   @override
   Future<void> createComment(String postId, CreateCommentDto dto) async {
-    return await datasource.createComment(postId, dto);
+    return await remoteDatasource.createComment(postId, dto);
   }
 
   @override
@@ -52,8 +109,30 @@ class DashboardRepositoryImpl implements DashboardRepository {
     String commentId,
     CreateReplyDto dto,
   ) async {
-    return await datasource.createReply(postId, commentId, dto);
+    return await remoteDatasource.createReply(postId, commentId, dto);
   }
 
+  /// Get cached posts for offline display
+  List<PostEntity> getCachedPosts() {
+    // Initialize if needed (synchronous fallback)
+    if (!localDatasource.isInitialized) {
+      return [];
+    }
+    return localDatasource.getValidCachedPosts();
+  }
 
+  /// Check if there's cached data available
+  bool hasCachedData() {
+    // Initialize if needed (synchronous fallback)
+    if (!localDatasource.isInitialized) {
+      return false;
+    }
+    return localDatasource.hasCachedData();
+  }
+
+  /// Clear all cached data
+  Future<void> clearCache() async {
+    await localDatasource.init();
+    await localDatasource.clearCache();
+  }
 }
