@@ -3,162 +3,295 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:skillwave/features/blogScreen/domain/entity/blog_entity.dart';
+import 'package:skillwave/config/themes/app_themes_color.dart';
 
-class BlogCard extends StatelessWidget {
+class BlogCard extends StatefulWidget {
   final BlogEntity blog;
   final Function(BlogEntity blog) onCardTap;
 
-  const BlogCard({Key? key, required this.blog, required this.onCardTap})
-    : super(key: key);
+  const BlogCard({super.key, required this.blog, required this.onCardTap});
+
+  @override
+  State<BlogCard> createState() => _BlogCardState();
+}
+
+class _BlogCardState extends State<BlogCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.02).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _onTapDown(TapDownDetails details) {
+    _animationController.forward();
+  }
+
+  void _onTapUp(TapUpDetails details) {
+    _animationController.reverse();
+  }
+
+  void _onTapCancel() {
+    _animationController.reverse();
+  }
+
+  String _calculateReadingTime(String content) {
+    final words = content.split(' ').length;
+    final readingTime = (words / 200)
+        .ceil(); // Average reading speed: 200 words per minute
+    return '${readingTime} min read';
+  }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final color = theme.colorScheme;
-    final text = theme.textTheme;
-
-    final chipBackground = theme.brightness == Brightness.dark
-        ? color.primary.withOpacity(0.15)
-        : color.primaryContainer.withOpacity(0.3);
-
-    return InkWell(
-      onTap: () => onCardTap(blog),
-      borderRadius: BorderRadius.circular(24.r),
-      splashColor: color.primary.withOpacity(0.08),
-      highlightColor: Colors.transparent,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        curve: Curves.easeInOut,
-        margin: EdgeInsets.symmetric(horizontal: 2.w, vertical: 6.h),
-        decoration: BoxDecoration(
-          color: color.surface,
-          borderRadius: BorderRadius.circular(24.r),
-          boxShadow: [
-            BoxShadow(
-              color: color.shadow.withOpacity(0.13),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Accent bar
-            Container(
-              width: 6.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(24.r),
-                  bottomLeft: Radius.circular(24.r),
+    return AnimatedBuilder(
+      animation: _animationController,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _scaleAnimation.value,
+          child: Opacity(
+            opacity: _fadeAnimation.value,
+            child: GestureDetector(
+              onTapDown: _onTapDown,
+              onTapUp: _onTapUp,
+              onTapCancel: _onTapCancel,
+              onTap: () => widget.onCardTap(widget.blog),
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                      spreadRadius: 0,
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 40,
+                      offset: const Offset(0, 16),
+                      spreadRadius: 0,
+                    ),
+                  ],
                 ),
-                gradient: LinearGradient(
-                  colors: [color.primary, color.primary.withOpacity(0.5)],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(18.sp),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title
-                    Text(
-                      blog.title,
-                      style: text.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        height: 1.3,
-                        color: color.onSurface,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 14.h),
-                    Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: color.primary, width: 2),
-                          ),
-                          child: CircleAvatar(
-                            radius: 16.r,
-                            backgroundImage: CachedNetworkImageProvider(
-                              "http://10.0.2.2:3000/profile/${blog.user.profilePicture}",
+                    // Content section
+                    Padding(
+                      padding: EdgeInsets.all(20.sp),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Title
+                          Text(
+                            widget.blog.title,
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                              height: 1.3,
                             ),
-                            backgroundColor: color.surfaceVariant,
-                          ),
-                        ),
-                        SizedBox(width: 12.w),
-                        Expanded(
-                          child: Text(
-                            blog.user.name,
-                            style: text.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: color.onSurface,
-                            ),
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        SizedBox(width: 8.w),
-                        Icon(
-                          Icons.calendar_today_rounded,
-                          size: 18,
-                          color: color.onSurface.withOpacity(0.6),
-                        ),
-                        SizedBox(width: 6.w),
-                        Text(
-                          DateFormat('MMM dd, yyyy').format(blog.createdAt),
-                          style: text.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: color.onSurface.withOpacity(0.7),
+                          SizedBox(height: 8.h),
+
+                          // Description
+                          Text(
+                            widget.blog.content,
+                            style: TextStyle(
+                              fontSize: 13.sp,
+                              color: Colors.grey[600],
+                              height: 1.3,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 18.h),
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 20,
-                      children: blog.tags.map((tag) {
-                        return Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 7.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: chipBackground,
-                            borderRadius: BorderRadius.circular(32),
-                            boxShadow: [
-                              BoxShadow(
-                                color: color.primary.withOpacity(0.08),
-                                blurRadius: 6,
-                                offset: Offset(0, 2),
+                          SizedBox(height: 12.h),
+
+                          // Tags
+                          if (widget.blog.tags.isNotEmpty)
+                            Wrap(
+                              spacing: 6.w,
+                              runSpacing: 6.h,
+                              children: widget.blog.tags.take(2).map((tag) {
+                                return Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8.w,
+                                    vertical: 3.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
+                                  child: Text(
+                                    '#$tag',
+                                    style: TextStyle(
+                                      fontSize: 10.sp,
+                                      color: Colors.grey[700],
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          SizedBox(height: 12.h),
+
+                          // Bottom section with user info and stats
+                          Row(
+                            children: [
+                              // User avatar and name
+                              Expanded(
+                                flex: 2,
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 16.r,
+                                      backgroundImage:
+                                          widget
+                                              .blog
+                                              .user
+                                              .profilePicture
+                                              .isNotEmpty
+                                          ? CachedNetworkImageProvider(
+                                              "http://10.0.2.2:3000/profile/${widget.blog.user.profilePicture}",
+                                            )
+                                          : null,
+                                      backgroundColor: SkillWaveAppColors
+                                          .primary
+                                          .withValues(alpha: 0.1),
+                                      child:
+                                          widget
+                                              .blog
+                                              .user
+                                              .profilePicture
+                                              .isEmpty
+                                          ? Text(
+                                              widget.blog.user.name
+                                                  .substring(0, 1)
+                                                  .toUpperCase(),
+                                              style: TextStyle(
+                                                color:
+                                                    SkillWaveAppColors.primary,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12.sp,
+                                              ),
+                                            )
+                                          : null,
+                                    ),
+                                    SizedBox(width: 8.w),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            widget.blog.user.name,
+                                            style: TextStyle(
+                                              fontSize: 13.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black87,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                          ),
+                                          Text(
+                                            DateFormat(
+                                              'MMM dd, yyyy',
+                                            ).format(widget.blog.createdAt),
+                                            style: TextStyle(
+                                              fontSize: 11.sp,
+                                              color: Colors.grey[600],
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: 8.w),
+
+                              // Reading time and tags
+                              Expanded(
+                                flex: 1,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Icon(
+                                      Icons.access_time,
+                                      size: 14.sp,
+                                      color: Colors.grey[500],
+                                    ),
+                                    SizedBox(width: 2.w),
+                                    Flexible(
+                                      child: Text(
+                                        _calculateReadingTime(
+                                          widget.blog.content,
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: 11.sp,
+                                          color: Colors.grey[600],
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    SizedBox(width: 8.w),
+                                    Icon(
+                                      Icons.visibility_outlined,
+                                      size: 14.sp,
+                                      color: Colors.grey[500],
+                                    ),
+                                    SizedBox(width: 2.w),
+                                    Flexible(
+                                      child: Text(
+                                        '${widget.blog.tags.length}',
+                                        style: TextStyle(
+                                          fontSize: 11.sp,
+                                          color: Colors.grey[600],
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
-                          child: Text(
-                            tag,
-                            style: text.labelSmall?.copyWith(
-                              color: color.primary,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.2,
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
