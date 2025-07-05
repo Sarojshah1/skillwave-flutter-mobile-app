@@ -1,5 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
+import 'package:skillwave/config/routes/app_router.dart';
 
 class CreatePostFab extends StatelessWidget {
   const CreatePostFab({super.key});
@@ -8,13 +10,7 @@ class CreatePostFab extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
-        // TODO: Navigate to create post screen
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Create post functionality coming soon!'),
-            backgroundColor: SkillWaveAppColors.primary,
-          ),
-        );
+        context.router.push(CreatePostRoute());
       },
       backgroundColor: SkillWaveAppColors.primary,
       foregroundColor: SkillWaveAppColors.textInverse,
