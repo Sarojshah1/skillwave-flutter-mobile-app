@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skillwave/config/themes/%20theme/dark_theme.dart';
 import 'package:skillwave/config/themes/%20theme/light_theme.dart';
@@ -26,6 +27,7 @@ import 'features/dashboardScreen/presentation/bloc/delete_post_bloc/delete_post_
 import 'features/dashboardScreen/presentation/bloc/like_post_bloc/like_post_bloc.dart';
 import 'features/dashboardScreen/presentation/bloc/create_comment_bloc/create_comment_bloc.dart';
 import 'features/dashboardScreen/presentation/bloc/create_reply_bloc/create_reply_bloc.dart';
+import 'features/dashboardScreen/presentation/providers/comment_provider.dart';
 import 'cores/network/network_aware_app.dart';
 
 class SkillWaveApp extends StatelessWidget {
@@ -87,6 +89,9 @@ class SkillWaveApp extends StatelessWidget {
             ),
             BlocProvider<RealtimeCommentBloc>(
               create: (_) => getIt<RealtimeCommentBloc>(),
+            ),
+            ChangeNotifierProvider<CommentProvider>(
+              create: (_) => CommentProvider(),
             ),
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(
