@@ -14,7 +14,17 @@ import 'config/routes/app_router.dart';
 import 'config/themes/theme_bloc/theme_bloc.dart';
 import 'cores/services/snackbar_service.dart';
 import 'features/profileScreen/presentation/bloc/profile_bloc.dart';
+import 'features/profileScreen/presentation/bloc/update_profile_bloc/update_profile_bloc.dart';
+import 'features/profileScreen/presentation/bloc/change_password_bloc/change_password_bloc.dart';
 import 'features/welcomescreens/presentation/bloc/splashBloc/splash_bloc.dart';
+import 'features/dashboardScreen/presentation/bloc/get_posts_bloc/get_posts_bloc.dart';
+import 'features/dashboardScreen/presentation/bloc/get_post_by_id_bloc/get_post_by_id_bloc.dart';
+import 'features/dashboardScreen/presentation/bloc/create_post_bloc/create_post_bloc.dart';
+import 'features/dashboardScreen/presentation/bloc/update_post_bloc/update_post_bloc.dart';
+import 'features/dashboardScreen/presentation/bloc/delete_post_bloc/delete_post_bloc.dart';
+import 'features/dashboardScreen/presentation/bloc/like_post_bloc/like_post_bloc.dart';
+import 'features/dashboardScreen/presentation/bloc/create_comment_bloc/create_comment_bloc.dart';
+import 'features/dashboardScreen/presentation/bloc/create_reply_bloc/create_reply_bloc.dart';
 import 'cores/network/network_aware_app.dart';
 
 class SkillWaveApp extends StatelessWidget {
@@ -44,10 +54,36 @@ class SkillWaveApp extends StatelessWidget {
             BlocProvider<AuthBloc>(create: (_) => getIt<AuthBloc>()),
             BlocProvider<LogoutBloc>(create: (_) => getIt<LogoutBloc>()),
             BlocProvider<ProfileBloc>(create: (_) => getIt<ProfileBloc>()),
+            BlocProvider<UpdateProfileBloc>(
+              create: (_) => getIt<UpdateProfileBloc>(),
+            ),
+            BlocProvider<ChangePasswordBloc>(
+              create: (_) => getIt<ChangePasswordBloc>(),
+            ),
             BlocProvider<BlogBloc>(create: (_) => getIt<BlogBloc>()),
             BlocProvider<CourseBloc>(create: (_) => getIt<CourseBloc>()),
             BlocProvider<ReviewBloc>(create: (_) => getIt<ReviewBloc>()),
             BlocProvider<PaymentBloc>(create: (_) => getIt<PaymentBloc>()),
+            BlocProvider<GetPostsBloc>(create: (_) => getIt<GetPostsBloc>()),
+            BlocProvider<GetPostByIdBloc>(
+              create: (_) => getIt<GetPostByIdBloc>(),
+            ),
+            BlocProvider<CreatePostBloc>(
+              create: (_) => getIt<CreatePostBloc>(),
+            ),
+            BlocProvider<UpdatePostBloc>(
+              create: (_) => getIt<UpdatePostBloc>(),
+            ),
+            BlocProvider<DeletePostBloc>(
+              create: (_) => getIt<DeletePostBloc>(),
+            ),
+            BlocProvider<LikePostBloc>(create: (_) => getIt<LikePostBloc>()),
+            BlocProvider<CreateCommentBloc>(
+              create: (_) => getIt<CreateCommentBloc>(),
+            ),
+            BlocProvider<CreateReplyBloc>(
+              create: (_) => getIt<CreateReplyBloc>(),
+            ),
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(
             builder: (context, themeState) {
