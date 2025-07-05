@@ -6,6 +6,7 @@ import 'package:skillwave/features/dashboardScreen/data/models/post_dto.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/create_reply_bloc/create_reply_bloc.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/create_reply_bloc/create_reply_events.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/create_reply_bloc/create_reply_state.dart';
+import 'package:skillwave/features/profileScreen/presentation/bloc/profile_bloc.dart';
 
 class ReplyInput extends StatefulWidget {
   final String postId;
@@ -20,6 +21,12 @@ class _ReplyInputState extends State<ReplyInput> {
   final TextEditingController _replyController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isSubmitting = false;
+  @override
+  void initState() {
+    super.initState();
+    // Load user profile when widget initializes
+    context.read<ProfileBloc>().add(LoadUserProfile());
+  }
 
   @override
   void dispose() {
@@ -104,7 +111,7 @@ class _ReplyInputState extends State<ReplyInput> {
                 final isLoading = state is CreateReplyLoading || _isSubmitting;
 
                 return IconButton(
-                  onPressed: isLoading ? null : _submitReply,
+                  onPressed: _submitReply,
                   icon: isLoading
                       ? const SizedBox(
                           width: 20,
