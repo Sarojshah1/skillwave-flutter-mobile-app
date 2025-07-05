@@ -22,7 +22,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
-  double _shakeThreshold = 15.0;
+  double _shakeThreshold = 10.0;
   DateTime? _lastShakeTime;
 
   @override
