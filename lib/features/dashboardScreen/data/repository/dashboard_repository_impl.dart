@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:injectable/injectable.dart';
 import '../datasources/dashboard_remote_datasource.dart';
 import '../../domin/repository/dashboard_repository.dart';
@@ -21,8 +22,8 @@ class DashboardRepositoryImpl implements DashboardRepository {
   }
 
   @override
-  Future<PostEntity> createPost(CreatePostDto dto) async {
-    return await datasource.createPost(dto);
+  Future<void> createPost(CreatePostDto dto, {List<File>? images}) async {
+    return await datasource.createPost(dto, images: images);
   }
 
   @override
@@ -53,4 +54,6 @@ class DashboardRepositoryImpl implements DashboardRepository {
   ) async {
     return await datasource.createReply(postId, commentId, dto);
   }
+
+
 }

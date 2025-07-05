@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:skillwave/config/constants/api_endpoints.dart';
@@ -36,13 +37,49 @@ class DashboardRemoteDatasource {
     }
   }
 
-  Future<PostEntity> createPost(CreatePostDto dto) async {
+  Future<void> createPost(CreatePostDto dto, {List<File>? images}) async {
     try {
+      FormData formData;
+
+      if (images != null && images.isNotEmpty) {
+        // Create FormData with images
+        Map<String, dynamic> fields = {
+          'title': dto.title,
+          'content': dto.content,
+          'tags': dto.tags.join(','),
+          'category': dto.category,
+        };
+
+        // Add images to FormData
+        List<MultipartFile> imageFiles = [];
+        for (int i = 0; i < images.length; i++) {
+          imageFiles.add(
+            await MultipartFile.fromFile(
+              images[i].path,
+              filename: images[i].path.split('/').last,
+            ),
+          );
+        }
+        fields['images'] = imageFiles;
+
+        formData = FormData.fromMap(fields);
+      } else {
+        // Create FormData without images
+        formData = FormData.fromMap({
+          'title': dto.title,
+          'content': dto.content,
+          'tags': dto.tags.join(','),
+          'category': dto.category,
+        });
+      }
+      print(formData.fields);
+
       final response = await dio.post(
         ApiEndpoints.createPost,
-        data: dto.toJson(),
+        data: formData,
+        options: Options(headers: {'Content-Type': 'multipart/form-data'}),
       );
-      return PostModel.fromJson(response.data).toEntity();
+
     } on DioException catch (e) {
       throw ApiFailure(message: e.message.toString());
     } catch (e) {

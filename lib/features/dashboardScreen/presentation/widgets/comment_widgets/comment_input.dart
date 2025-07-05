@@ -41,6 +41,9 @@ class _CommentInputState extends State<CommentInput> {
   Widget build(BuildContext context) {
     return BlocListener<CreateCommentBloc, CreateCommentState>(
       listener: (context, state) {
+        // Only update state if widget is still mounted
+        if (!mounted) return;
+
         if (state is CreateCommentLoaded) {
           _commentController.clear();
           setState(() => _isSubmitting = false);
@@ -67,7 +70,6 @@ class _CommentInputState extends State<CommentInput> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-            
                 CircleAvatar(
                   radius: 24,
                   backgroundColor: SkillWaveAppColors.primary,
@@ -201,7 +203,21 @@ class _CommentInputState extends State<CommentInput> {
 
       final dto = CreateCommentDto(content: _commentController.text.trim());
 
-      context.read<CreateCommentBloc>().add(CreateComment(widget.postId, dto));
+      // Check if widget is still mounted before adding event
+      if (mounted) {
+        try {
+          context.read<CreateCommentBloc>().add(
+            CreateComment(widget.postId, dto),
+          );
+        } catch (e) {
+          // If Bloc is closed, reset the submitting state
+          if (mounted) {
+            setState(() => _isSubmitting = false);
+          }
+        }
+      } else {
+        setState(() => _isSubmitting = false);
+      }
     }
   }
 }
