@@ -9,10 +9,10 @@ class CourseActionSection extends StatelessWidget {
   final VoidCallback onEnroll;
 
   const CourseActionSection({
-    Key? key,
+    super.key,
     required this.course,
     required this.onEnroll,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class CourseActionSection extends StatelessWidget {
                 SizedBox(width: 8.w),
                 Text(
                   'Enroll Now',
-                  style: textTheme.button?.copyWith(
+                  style: textTheme.button.copyWith(
                     color: SkillWaveAppColors.textInverse,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 0.8,
