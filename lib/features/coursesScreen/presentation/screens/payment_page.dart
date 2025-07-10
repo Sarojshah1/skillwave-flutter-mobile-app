@@ -12,11 +12,11 @@ class PaymentPage extends StatefulWidget {
   final String courseId;
   final CourseEntity course;
   const PaymentPage({
-    Key? key,
+    super.key,
     required this.amount,
     required this.courseId,
     required this.course,
-  }) : super(key: key);
+  });
 
   @override
   State<PaymentPage> createState() => _PaymentPageState();
