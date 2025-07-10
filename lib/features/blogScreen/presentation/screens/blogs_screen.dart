@@ -126,7 +126,7 @@ class _BlogsViewState extends State<BlogsView> {
                           borderSide: BorderSide.none,
                         ),
                         filled: true,
-                        fillColor: color.surfaceVariant.withOpacity(0.2),
+                        fillColor: color.surfaceContainerHighest.withOpacity(0.2),
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 20,
                           vertical: 15,
@@ -142,7 +142,7 @@ class _BlogsViewState extends State<BlogsView> {
                     child: Text(
                       'Discover a wide range of blog topics.',
                       style: text.bodyLarge?.copyWith(
-                        color: color.onBackground.withOpacity(0.6),
+                        color: color.onSurface.withOpacity(0.6),
                       ),
                     ),
                   ),
@@ -161,7 +161,7 @@ class _BlogsViewState extends State<BlogsView> {
                       child: Text(
                         "No blogs found.",
                         style: text.bodyLarge?.copyWith(
-                          color: color.onBackground,
+                          color: color.onSurface,
                         ),
                       ),
                     ),
