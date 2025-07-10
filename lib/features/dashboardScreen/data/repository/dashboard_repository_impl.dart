@@ -113,6 +113,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
   }
 
   /// Get cached posts for offline display
+  @override
   List<PostEntity> getCachedPosts() {
     // Initialize if needed (synchronous fallback)
     if (!localDatasource.isInitialized) {
@@ -122,6 +123,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
   }
 
   /// Check if there's cached data available
+  @override
   bool hasCachedData() {
     // Initialize if needed (synchronous fallback)
     if (!localDatasource.isInitialized) {
@@ -131,6 +133,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
   }
 
   /// Clear all cached data
+  @override
   Future<void> clearCache() async {
     await localDatasource.init();
     await localDatasource.clearCache();

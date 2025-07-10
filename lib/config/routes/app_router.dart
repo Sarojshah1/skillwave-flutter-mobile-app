@@ -14,15 +14,17 @@ import 'package:skillwave/features/blogScreen/presentation/screens/blogs_screen.
 import 'package:skillwave/features/coursesScreen/domain/entity/course_entity.dart';
 import 'package:skillwave/features/coursesScreen/presentation/screens/course_detail_page.dart';
 import 'package:skillwave/features/coursesScreen/presentation/screens/course_screen.dart';
-import 'package:skillwave/features/dashboardScreen/presentation/screen/dashboard_Screen.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/screens/dashboard_screen.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/screens/create_post_screen.dart';
 import 'package:skillwave/features/homeScreen/presentation/screens/home_view.dart';
+import 'package:skillwave/features/my-learnings/presentation/screens/content_page.dart';
+import 'package:skillwave/features/my-learnings/presentation/screens/lessons_list_screen.dart';
 import 'package:skillwave/features/profileScreen/presentation/screens/profile_screen.dart';
 import 'package:skillwave/features/welcomescreens/presentation/screens/onboarding_Screen.dart';
 import 'package:skillwave/features/welcomescreens/presentation/screens/splash_Screen.dart';
 import 'package:skillwave/features/profileScreen/presentation/screens/change_password_screen.dart';
 import 'package:skillwave/features/profileScreen/presentation/screens/edit_profile_screen.dart';
+import 'package:skillwave/features/my-learnings/presentation/screens/my_learnings_screen.dart';
 
 import '../../features/SettingScreen/presentation/screens/aboutus_page.dart';
 import '../../features/SettingScreen/presentation/screens/notification_settings_screen.dart';
@@ -65,6 +67,9 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: CreatePostRoute.page, path: '/create-post'),
     AutoRoute(page: ChangePasswordRoute.page, path: '/change-password'),
     AutoRoute(page: EditProfileRoute.page, path: '/edit-profile'),
+    AutoRoute(page: MyLearningsRoute.page, path: '/my-learnings'),
+    AutoRoute(page: LessonsListRoute.page, path: '/lessons-list'),
+    AutoRoute(page: ContentRoute.page, path: '/content-page'),
     AutoRoute(
       page: NotificationSettingsRoute.page,
       path: '/notification-settings',

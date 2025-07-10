@@ -7,11 +7,11 @@ class InfoIconText extends StatelessWidget {
   final Color color;
 
   const InfoIconText({
-    Key? key,
+    super.key,
     required this.icon,
     required this.label,
     required this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -58,7 +58,7 @@ class _BlogCardState extends State<BlogCard>
     final words = content.split(' ').length;
     final readingTime = (words / 200)
         .ceil(); // Average reading speed: 200 words per minute
-    return '${readingTime} min read';
+    return '$readingTime min read';
   }
 
   @override

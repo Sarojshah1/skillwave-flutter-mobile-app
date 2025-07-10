@@ -17,7 +17,7 @@ import 'package:skillwave/features/coursesScreen/presentation/screens/payment_pa
 class CourseDetailsPage extends StatefulWidget {
   final CourseEntity course;
 
-  const CourseDetailsPage({Key? key, required this.course}) : super(key: key);
+  const CourseDetailsPage({super.key, required this.course});
 
   @override
   _CourseDetailsPageState createState() => _CourseDetailsPageState();

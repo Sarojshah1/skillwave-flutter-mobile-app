@@ -29,8 +29,8 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
-  String _selectedCategory = 'All';
-  List<String> _selectedTags = [];
+  final String _selectedCategory = 'All';
+  final List<String> _selectedTags = [];
   int _currentPage = 1;
   bool _isLoadingMore = false;
   bool _hasMorePosts = true;

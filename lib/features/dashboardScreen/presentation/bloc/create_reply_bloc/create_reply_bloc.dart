@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import '../../../data/models/post_dto.dart';
 import '../../../domin/usecases/create_reply_usecase.dart';
 import 'create_reply_events.dart';
 import 'create_reply_state.dart';

@@ -4,12 +4,9 @@ import 'package:injectable/injectable.dart';
 
 import 'package:skillwave/features/coursesScreen/domain/entity/course_entity.dart';
 import 'package:skillwave/cores/failure/failure.dart';
-import 'package:skillwave/features/coursesScreen/domain/entity/review_entity.dart';
 import 'package:skillwave/features/coursesScreen/domain/usecase/create_payment_usecase.dart';
-import 'package:skillwave/features/coursesScreen/domain/usecase/create_review_usecase.dart';
 import 'package:skillwave/features/coursesScreen/domain/usecase/get_course_by_id_usecase.dart';
 import 'package:skillwave/features/coursesScreen/domain/usecase/get_courses_usecase.dart';
-import 'package:skillwave/features/coursesScreen/domain/usecase/get_reviews_by_course_id_usecase.dart';
 
 part 'course_event.dart';
 part 'course_state.dart';

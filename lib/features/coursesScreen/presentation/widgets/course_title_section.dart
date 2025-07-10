@@ -7,7 +7,7 @@ import 'package:skillwave/features/coursesScreen/domain/entity/course_entity.dar
 class CourseTitleSection extends StatelessWidget {
   final CourseEntity course;
 
-  const CourseTitleSection({Key? key, required this.course}) : super(key: key);
+  const CourseTitleSection({super.key, required this.course});
 
   @override
   Widget build(BuildContext context) {

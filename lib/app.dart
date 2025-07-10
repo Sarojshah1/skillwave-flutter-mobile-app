@@ -11,6 +11,8 @@ import 'package:skillwave/features/coursesScreen/presentation/bloc/course_bloc.d
 import 'package:skillwave/features/coursesScreen/presentation/bloc/payment_bloc.dart';
 import 'package:skillwave/features/coursesScreen/presentation/bloc/review_bloc/review_bloc.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/realtime_comment_bloc.dart';
+import 'package:skillwave/features/my-learnings/presentation/bloc/learning_bloc.dart';
+import 'package:skillwave/features/my-learnings/presentation/bloc/lessons_bloc/lessons_bloc.dart';
 import 'config/di/di.container.dart';
 import 'config/routes/app_router.dart';
 import 'config/themes/theme_bloc/theme_bloc.dart';
@@ -92,6 +94,12 @@ class SkillWaveApp extends StatelessWidget {
             ),
             ChangeNotifierProvider<CommentProvider>(
               create: (_) => CommentProvider(),
+            ),
+             BlocProvider<LearningBloc>(
+              create: (_) => getIt<LearningBloc>(),
+            ),
+            BlocProvider<LessonsBloc>(
+              create: (_) => getIt<LessonsBloc>(),
             ),
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(

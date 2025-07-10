@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skillwave/features/profileScreen/presentation/bloc/profile_bloc.dart';

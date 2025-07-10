@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:skillwave/config/constants/api_endpoints.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/config/themes/app_text_styles.dart';
 import 'package:skillwave/features/dashboardScreen/domin/entity/post_entity.dart';
@@ -26,7 +27,7 @@ class PostCardHeader extends StatelessWidget {
             backgroundColor: SkillWaveAppColors.textInverse,
             backgroundImage: user.profilePicture.isNotEmpty
                 ? CachedNetworkImageProvider(
-                    "http://10.0.2.2:3000/profile/${user.profilePicture}",
+                    "${ApiEndpoints.baseUrlForImage}/profile/${user.profilePicture}",
                   )
                 : null,
             child: user.profilePicture.isEmpty
