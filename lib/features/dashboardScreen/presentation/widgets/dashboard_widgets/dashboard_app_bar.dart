@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skillwave/config/constants/api_endpoints.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/config/themes/app_text_styles.dart';
 import 'package:skillwave/features/profileScreen/presentation/bloc/profile_bloc.dart';
@@ -142,7 +143,7 @@ class _DashboardAppBarState extends State<DashboardAppBar>
                 profileState is ProfileLoaded &&
                     profileState.user.profilePicture.isNotEmpty
                 ? CachedNetworkImageProvider(
-                    "http://10.0.2.2:3000/profile/${profileState.user.profilePicture}",
+                    "${ApiEndpoints.baseUrlForImage}/profile/${profileState.user.profilePicture}",
                   )
                 : null,
             child: profileState is ProfileLoaded
@@ -156,7 +157,7 @@ class _DashboardAppBarState extends State<DashboardAppBar>
                           ),
                         )
                       : null)
-                : Container(
+                : SizedBox(
                     width: 24,
                     height: 24,
                     child: const CircularProgressIndicator(

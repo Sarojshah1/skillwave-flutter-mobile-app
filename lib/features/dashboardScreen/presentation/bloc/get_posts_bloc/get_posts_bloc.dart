@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import '../../../data/models/post_dto.dart';
 import '../../../domin/entity/post_entity.dart';
 import '../../../domin/usecases/get_posts_usecase.dart';
 import 'get_posts_events.dart';

@@ -1,8 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:skillwave/cores/failure/failure.dart';
-import '../../../data/models/post_dto.dart';
-import '../../../domin/entity/post_entity.dart';
 import '../../../domin/usecases/create_post_usecase.dart';
 import 'create_post_events.dart';
 import 'create_post_state.dart';

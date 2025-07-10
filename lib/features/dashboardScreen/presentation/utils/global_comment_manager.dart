@@ -12,8 +12,6 @@ class GlobalCommentManager extends ChangeNotifier {
 
   // Store listeners by post ID
   final Map<String, List<Function(List<CommentEntity>)>> _listeners = {};
-
-  // Add a comment to a specific post
   void addComment(String postId, CommentEntity comment) {
     if (!_commentsByPost.containsKey(postId)) {
       _commentsByPost[postId] = [];

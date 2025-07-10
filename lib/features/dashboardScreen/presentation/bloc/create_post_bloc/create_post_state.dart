@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import '../../../domin/entity/post_entity.dart';
 
 abstract class CreatePostState extends Equatable {
   const CreatePostState();

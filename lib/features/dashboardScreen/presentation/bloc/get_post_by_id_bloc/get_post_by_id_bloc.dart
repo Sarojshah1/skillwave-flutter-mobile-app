@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import '../../../domin/entity/post_entity.dart';
 import '../../../domin/usecases/get_post_by_id_usecase.dart';
 import 'get_post_by_id_events.dart';
 import 'get_post_by_id_state.dart';

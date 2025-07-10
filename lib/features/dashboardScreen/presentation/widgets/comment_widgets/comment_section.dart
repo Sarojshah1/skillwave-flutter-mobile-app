@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/config/themes/app_text_styles.dart';
 import 'package:skillwave/features/dashboardScreen/domin/entity/post_entity.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/create_comment_bloc/create_comment_bloc.dart';
-import 'package:skillwave/features/dashboardScreen/presentation/bloc/create_comment_bloc/create_comment_events.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/create_comment_bloc/create_comment_state.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/realtime_comment_bloc.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/utils/global_comment_store.dart';
