@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:skillwave/config/constants/api_endpoints.dart';
 import 'package:skillwave/features/coursesScreen/domain/entity/course_entity.dart';
 
 class CourseHeroHeader extends StatelessWidget {
   final CourseEntity course;
 
-  const CourseHeroHeader({Key? key, required this.course}) : super(key: key);
+  const CourseHeroHeader({super.key, required this.course});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class CourseHeroHeader extends StatelessWidget {
           children: [
             // Course Image with Gradient Overlay
             CachedNetworkImage(
-              imageUrl: 'http://10.0.2.2:3000/thumbnails/${course.thumbnail}',
+              imageUrl: '${ApiEndpoints.baseUrlForImage}/thumbnails/${course.thumbnail}',
               fit: BoxFit.cover,
               placeholder: (context, url) => Container(
                 color: Colors.grey[300],
