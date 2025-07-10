@@ -1,6 +1,5 @@
 import 'package:injectable/injectable.dart';
 import 'package:skillwave/features/coursesScreen/data/datasource/course_datasource.dart';
-import 'package:skillwave/features/coursesScreen/data/model/course_model.dart';
 import 'package:skillwave/features/coursesScreen/domain/entity/course_entity.dart';
 import 'package:skillwave/features/coursesScreen/domain/entity/review_entity.dart';
 import 'package:skillwave/features/coursesScreen/domain/repository/course_repository.dart';
