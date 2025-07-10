@@ -22,12 +22,12 @@ class LoginForm extends StatefulWidget {
   final HiveService? hiveService;
 
   const LoginForm({
-    Key? key,
+    super.key,
     this.emailController,
     this.passwordController,
     this.biometricHelper,
     this.hiveService,
-  }) : super(key: key);
+  });
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -192,11 +192,11 @@ class _LoginFormState extends State<LoginForm> {
                     icon: Icon(Icons.fingerprint),
                     label: Text('Login with Fingerprint/Face'),
                     onPressed: () async {
-                      final authenticated = await biometricHelper!
+                      final authenticated = await biometricHelper
                           .authenticateWithBiometrics();
                       if (authenticated) {
                         final email = hiveService!.getEmail();
-                        final password = hiveService!.getPassword();
+                        final password = hiveService.getPassword();
                         if (email != null && password != null) {
                           context.read<AuthBloc>().add(
                             LogInRequested(
