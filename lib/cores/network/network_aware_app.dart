@@ -11,7 +11,7 @@ class NetworkAwareApp extends StatefulWidget {
   final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
   final bool? debugShowCheckedModeBanner;
   const NetworkAwareApp({
-    Key? key,
+    super.key,
     required this.routerConfig,
     this.title,
     this.theme,
@@ -19,7 +19,7 @@ class NetworkAwareApp extends StatefulWidget {
     this.themeMode,
     this.scaffoldMessengerKey,
     this.debugShowCheckedModeBanner,
-  }) : super(key: key);
+  });
 
   @override
   State<NetworkAwareApp> createState() => _NetworkAwareAppState();
