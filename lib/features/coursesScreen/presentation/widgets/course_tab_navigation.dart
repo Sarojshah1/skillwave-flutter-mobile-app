@@ -7,11 +7,11 @@ class CourseTabNavigation extends StatelessWidget {
   final VoidCallback? onReviewsTabSelected;
 
   const CourseTabNavigation({
-    Key? key,
+    super.key,
     required this.activeTab,
     required this.onTabChanged,
     this.onReviewsTabSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

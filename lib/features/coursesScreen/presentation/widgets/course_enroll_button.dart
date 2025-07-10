@@ -4,8 +4,7 @@ import 'package:skillwave/config/themes/app_themes_color.dart';
 class CourseEnrollButton extends StatelessWidget {
   final VoidCallback onPressed;
 
-  const CourseEnrollButton({Key? key, required this.onPressed})
-    : super(key: key);
+  const CourseEnrollButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

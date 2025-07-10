@@ -6,9 +6,7 @@ import 'package:skillwave/features/dashboardScreen/domin/entity/post_entity.dart
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/create_comment_bloc/create_comment_bloc.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/like_post_bloc/like_post_bloc.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/widgets/comment_widgets/comment_section.dart';
-import 'package:skillwave/features/dashboardScreen/presentation/widgets/reply_widgets/reply_section.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/realtime_comment_bloc.dart';
-import 'package:skillwave/config/di/di.container.dart';
 import 'post_card_header.dart';
 import 'post_card_content.dart';
 import 'post_card_actions.dart';

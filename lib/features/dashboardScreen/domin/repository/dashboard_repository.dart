@@ -2,8 +2,6 @@ import '../../data/models/post_dto.dart';
 import '../entity/post_entity.dart';
 
 import 'dart:io';
-import '../../data/models/post_dto.dart';
-import '../entity/post_entity.dart';
 
 abstract class DashboardRepository {
   Future<PostsResponseEntity> getPosts(GetPostsDto dto);

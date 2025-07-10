@@ -39,15 +39,15 @@ class _SettingsSectionState extends State<SettingsSection> {
                   subtitle: "Update your account password",
                   trailing: OutlinedButton(
                     onPressed: () {},
-                    child: Text(
-                      "Change",
-                      style: TextStyle(color: colorScheme.primary),
-                    ),
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(color: colorScheme.primary),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
+                    ),
+                    child: Text(
+                      "Change",
+                      style: TextStyle(color: colorScheme.primary),
                     ),
                   ),
                 ),

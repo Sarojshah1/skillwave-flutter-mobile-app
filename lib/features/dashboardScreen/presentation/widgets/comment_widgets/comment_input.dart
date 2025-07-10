@@ -1,13 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skillwave/config/constants/api_endpoints.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/config/themes/app_text_styles.dart';
 import 'package:skillwave/features/dashboardScreen/data/models/post_dto.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/create_comment_bloc/create_comment_bloc.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/create_comment_bloc/create_comment_events.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/bloc/create_comment_bloc/create_comment_state.dart';
-import 'package:skillwave/features/profileScreen/domin/entity/user_entity.dart';
 import 'package:skillwave/features/profileScreen/presentation/bloc/profile_bloc.dart';
 
 class CommentInput extends StatefulWidget {
@@ -77,7 +77,7 @@ class _CommentInputState extends State<CommentInput> {
                       profileState is ProfileLoaded &&
                           profileState.user.profilePicture.isNotEmpty
                       ? CachedNetworkImageProvider(
-                          "http://10.0.2.2:3000/profile/${profileState.user.profilePicture}",
+                          "${ApiEndpoints.baseUrlForImage}/profile/${profileState.user.profilePicture}",
                         )
                       : null,
                   child: profileState is ProfileLoaded
@@ -202,15 +202,14 @@ class _CommentInputState extends State<CommentInput> {
       setState(() => _isSubmitting = true);
 
       final dto = CreateCommentDto(content: _commentController.text.trim());
-
-      // Check if widget is still mounted before adding event
+      print('Submitting comment: ${dto.content}');
+    // final mounted = context.mounted;
       if (mounted) {
         try {
           context.read<CreateCommentBloc>().add(
             CreateComment(widget.postId, dto),
           );
         } catch (e) {
-          // If Bloc is closed, reset the submitting state
           if (mounted) {
             setState(() => _isSubmitting = false);
           }

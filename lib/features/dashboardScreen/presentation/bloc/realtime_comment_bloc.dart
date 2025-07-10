@@ -8,6 +8,7 @@ import 'package:skillwave/config/di/di.container.dart';
 import 'package:skillwave/cores/services/socket_service.dart';
 import 'package:skillwave/features/dashboardScreen/domin/entity/post_entity.dart';
 import 'package:skillwave/features/dashboardScreen/presentation/providers/comment_provider.dart';
+import 'package:skillwave/cores/shared_prefs/user_shared_prefs.dart';
 
 part 'realtime_comment_event.dart';
 part 'realtime_comment_state.dart';
@@ -25,6 +26,9 @@ class RealtimeCommentBloc
 
   // Global comment provider
   final CommentProvider _commentProvider = CommentProvider();
+
+  // Add UserSharedPrefs instance
+  final UserSharedPrefs _userPrefs = getIt<UserSharedPrefs>();
 
   RealtimeCommentBloc() : super(RealtimeCommentInitial()) {
     on<InitializeSocket>(_onInitializeSocket);
@@ -62,16 +66,24 @@ class RealtimeCommentBloc
     }
   }
 
-  void _onJoinPostRoom(JoinPostRoom event, Emitter<RealtimeCommentState> emit) {
+  Future<void> _onJoinPostRoom(
+    JoinPostRoom event,
+    Emitter<RealtimeCommentState> emit,
+  ) async {
     try {
-      // Only try to join if socket is connected
       if (_socketService.isConnected) {
-        _socketService.joinPostRoom(event.postId);
-        joinedRooms.add(event.postId);
-        _logger.i(
-          'Joined post room: ${event.postId}. Total rooms: ${joinedRooms.length}',
-        );
-        emit(RealtimeCommentJoinedRoom(event.postId));
+        final userIdResult = await _userPrefs.getUserId();
+        final userId = userIdResult.fold((_) => null, (id) => id);
+        if (userId != null) {
+          await _socketService.joinForumPost(event.postId, userId);
+          joinedRooms.add(event.postId);
+          _logger.i(
+            'Joined post room: ${event.postId}. Total rooms: ${joinedRooms.length}',
+          );
+          emit(RealtimeCommentJoinedRoom(event.postId));
+        } else {
+          emit(RealtimeCommentError('User ID not found'));
+        }
       } else {
         _logger.w('Socket not connected, skipping join post room');
         emit(RealtimeCommentError('Socket not connected'));
@@ -82,17 +94,22 @@ class RealtimeCommentBloc
     }
   }
 
-  void _onLeavePostRoom(
+  Future<void> _onLeavePostRoom(
     LeavePostRoom event,
     Emitter<RealtimeCommentState> emit,
-  ) {
+  ) async {
     try {
-      // Only leave if explicitly requested (not on widget dispose)
       if (_socketService.isConnected && event.forceLeave) {
-        _socketService.leavePostRoom(event.postId);
-        joinedRooms.remove(event.postId);
-        emit(RealtimeCommentLeftRoom(event.postId));
-        _logger.i('Left post room: ${event.postId}');
+        final userIdResult = await _userPrefs.getUserId();
+        final userId = userIdResult.fold((_) => null, (id) => id);
+        if (userId != null) {
+          await _socketService.leaveForumPost(event.postId, userId);
+          joinedRooms.remove(event.postId);
+          emit(RealtimeCommentLeftRoom(event.postId));
+          _logger.i('Left post room: ${event.postId}');
+        } else {
+          emit(RealtimeCommentError('User ID not found'));
+        }
       } else {
         _logger.w(
           'Socket not connected or force leave not requested, skipping leave post room',

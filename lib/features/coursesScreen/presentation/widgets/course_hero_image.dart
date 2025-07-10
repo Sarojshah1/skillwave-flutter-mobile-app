@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:skillwave/config/constants/api_endpoints.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/config/themes/extensions/text_theme_extension.dart';
 import 'package:skillwave/features/coursesScreen/domain/entity/course_entity.dart';
@@ -8,7 +9,7 @@ import 'package:skillwave/features/coursesScreen/domain/entity/course_entity.dar
 class CourseHeroImage extends StatelessWidget {
   final CourseEntity course;
 
-  const CourseHeroImage({Key? key, required this.course}) : super(key: key);
+  const CourseHeroImage({super.key, required this.course});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class CourseHeroImage extends StatelessWidget {
         AspectRatio(
           aspectRatio: 16 / 9,
           child: CachedNetworkImage(
-            imageUrl: 'http://10.0.2.2:3000/thumbnails/${course.thumbnail}',
+            imageUrl: '${ApiEndpoints.baseUrlForImage}/thumbnails/${course.thumbnail}',
             fit: BoxFit.cover,
             placeholder: (context, url) => Container(
               decoration: BoxDecoration(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:skillwave/config/constants/api_endpoints.dart';
 import 'package:skillwave/features/coursesScreen/domain/entity/review_entity.dart';
 
 class CourseReviewsSection extends StatefulWidget {
@@ -10,11 +11,11 @@ class CourseReviewsSection extends StatefulWidget {
   final VoidCallback onLoadReviews;
 
   const CourseReviewsSection({
-    Key? key,
+    super.key,
     required this.reviews,
     required this.onSubmitReview,
     required this.onLoadReviews,
-  }) : super(key: key);
+  });
 
   @override
   State<CourseReviewsSection> createState() => _CourseReviewsSectionState();
@@ -308,7 +309,7 @@ class _CourseReviewsSectionState extends State<CourseReviewsSection> {
             children: [
               CircleAvatar(
                 backgroundImage: CachedNetworkImageProvider(
-                  "http://10.0.2.2:3000/profile/${review.user.profilePicture}",
+                  "${ApiEndpoints.baseUrlForImage}/profile/${review.user.profilePicture}",
                 ),
               ),
               const SizedBox(width: 12),

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skillwave/config/constants/api_endpoints.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:skillwave/config/themes/app_text_styles.dart';
 import 'package:skillwave/features/dashboardScreen/data/models/post_dto.dart';
@@ -83,7 +84,7 @@ class _CommentItemState extends State<CommentItem> {
               backgroundColor: SkillWaveAppColors.primary,
               backgroundImage: widget.comment.user.profilePicture.isNotEmpty
                   ? CachedNetworkImageProvider(
-                      "http://10.0.2.2:3000/profile/${widget.comment.user.profilePicture}",
+                      "${ApiEndpoints.baseUrlForImage}/profile/${widget.comment.user.profilePicture}",
                     )
                   : null,
               child: widget.comment.user.profilePicture.isEmpty

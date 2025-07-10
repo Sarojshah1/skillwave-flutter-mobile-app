@@ -15,7 +15,7 @@ import 'package:skillwave/config/themes/app_themes_color.dart';
 class BlogDetailPage extends StatefulWidget {
   final BlogEntity blog;
 
-  const BlogDetailPage({Key? key, required this.blog}) : super(key: key);
+  const BlogDetailPage({super.key, required this.blog});
 
   @override
   State<BlogDetailPage> createState() => _BlogDetailPageState();

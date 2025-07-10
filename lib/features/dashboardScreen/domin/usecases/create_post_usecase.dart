@@ -3,7 +3,6 @@ import 'package:injectable/injectable.dart';
 import 'package:skillwave/cores/failure/failure.dart';
 import 'package:skillwave/cores/network/models/skillwave_response.dart';
 import '../../data/models/post_dto.dart';
-import '../entity/post_entity.dart';
 import '../repository/dashboard_repository.dart';
 
 @lazySingleton
