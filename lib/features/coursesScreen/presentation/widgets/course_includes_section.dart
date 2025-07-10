@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CourseIncludesSection extends StatelessWidget {
-  const CourseIncludesSection({Key? key}) : super(key: key);
+  const CourseIncludesSection({super.key});
 
   @override
   Widget build(BuildContext context) {
