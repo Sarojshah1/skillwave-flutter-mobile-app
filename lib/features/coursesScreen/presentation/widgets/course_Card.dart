@@ -13,8 +13,7 @@ class CourseCard extends StatefulWidget {
   final CourseEntity course;
   final VoidCallback onEnroll;
 
-  const CourseCard({Key? key, required this.course, required this.onEnroll})
-    : super(key: key);
+  const CourseCard({super.key, required this.course, required this.onEnroll});
 
   @override
   _CourseCardState createState() => _CourseCardState();
