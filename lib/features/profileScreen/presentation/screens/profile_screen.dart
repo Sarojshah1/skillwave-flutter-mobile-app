@@ -50,11 +50,7 @@ class _ProfileViewState extends State<ProfileView> {
         break;
       case 'studygroups':
         // Placeholder navigation for Study Groups
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Navigate to Study Groups page (to be implemented)'),
-          ),
-        );
+        context.router.push(const MyStudyGroupsRoute());
         // context.router.pushNamed('/studygroups'); // Uncomment when StudyGroup page exists
         break;
       case 'changepassword':
