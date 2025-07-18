@@ -256,25 +256,7 @@ class _DashboardAppBarState extends State<DashboardAppBar>
         onSelected: (value) {
           switch (value) {
             case 'group_chats':
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Row(
-                    children: [
-                      const Icon(
-                        Icons.chat_bubble_outline,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(width: 8),
-                      const Text('Group Chats coming soon!'),
-                    ],
-                  ),
-                  backgroundColor: SkillWaveAppColors.primary,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              );
+              context.router.push(const GroupStudyRoute());
               break;
             case 'group_projects':
               ScaffoldMessenger.of(context).showSnackBar(
