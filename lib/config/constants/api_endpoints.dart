@@ -72,7 +72,7 @@ class ApiEndpoints {
     return "$baseUrl/groupstudy/$groupId/";
   }
 
-  static String getUserGroupsUrl(String userId) {
-    return "$baseUrl/groupstudy/user/$userId";
+  static String getUserGroupsUrl() {
+    return "$baseUrl/groupstudy/user";
   }
 }

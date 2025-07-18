@@ -25,6 +25,9 @@ import 'package:skillwave/features/welcomescreens/presentation/screens/splash_Sc
 import 'package:skillwave/features/profileScreen/presentation/screens/change_password_screen.dart';
 import 'package:skillwave/features/profileScreen/presentation/screens/edit_profile_screen.dart';
 import 'package:skillwave/features/my-learnings/presentation/screens/my_learnings_screen.dart';
+import 'package:skillwave/features/study_groups/presentation/view/group_study_page.dart';
+import 'package:skillwave/features/study_groups/presentation/view/create_group_page.dart';
+import 'package:skillwave/features/study_groups/presentation/view/my_study_groups_page.dart';
 
 import '../../features/SettingScreen/presentation/screens/aboutus_page.dart';
 import '../../features/SettingScreen/presentation/screens/notification_settings_screen.dart';
@@ -62,9 +65,11 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: SettingsRoute.page, path: 'settings'),
       ],
     ),
+    AutoRoute(page: GroupStudyRoute.page, path: '/study-groups'),
     AutoRoute(page: AboutUsRoute.page),
     AutoRoute(page: CourseDetailsRoute.page),
     AutoRoute(page: CreatePostRoute.page, path: '/create-post'),
+    AutoRoute(page: CreateGroupRoute.page, path: '/create-group'),
     AutoRoute(page: ChangePasswordRoute.page, path: '/change-password'),
     AutoRoute(page: EditProfileRoute.page, path: '/edit-profile'),
     AutoRoute(page: MyLearningsRoute.page, path: '/my-learnings'),
@@ -77,5 +82,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: SecuritySettingsRoute.page, path: '/security-settings'),
     AutoRoute(page: PrivacySettingsRoute.page, path: '/privacy-settings'),
     AutoRoute(page: ContactUsRoute.page, path: '/contact-us'),
+    AutoRoute(page: MyStudyGroupsRoute.page, path: '/my-study-groups'),
   ];
 }
