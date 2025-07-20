@@ -1,92 +1,71 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skillwave/config/constants/api_endpoints.dart';
+import 'package:skillwave/config/di/di.container.dart';
 import 'package:skillwave/config/themes/app_themes_color.dart';
 import 'package:intl/intl.dart';
+import 'package:skillwave/features/study_groups/presentation/view_model/group_chat_bloc.dart';
+import 'package:skillwave/features/study_groups/domain/entity/group_message_entity.dart';
+import 'package:injectable/injectable.dart';
+import 'package:skillwave/config/di/di.container.dart';
+import 'package:skillwave/cores/services/socket_service.dart';
+import 'package:skillwave/features/study_groups/presentation/view/group_video_call_page.dart';
 
 class GroupChatPage extends StatefulWidget {
+  final String groupId;
   final String groupName;
-  const GroupChatPage({Key? key, required this.groupName}) : super(key: key);
+  final String currentUserId;
+  final String currentUserName;
+  final String currentUserAvatarUrl;
+  const GroupChatPage({
+    Key? key,
+    required this.groupId,
+    required this.groupName,
+    required this.currentUserId,
+    required this.currentUserName,
+    required this.currentUserAvatarUrl,
+  }) : super(key: key);
 
   @override
   State<GroupChatPage> createState() => _GroupChatPageState();
 }
 
-class _ChatMessage {
-  final String sender;
-  final String text;
-  final bool isMe;
-  final DateTime time;
-  final String avatarUrl;
-  _ChatMessage({
-    required this.sender,
-    required this.text,
-    required this.isMe,
-    required this.time,
-    required this.avatarUrl,
-  });
-}
-
 class _GroupChatPageState extends State<GroupChatPage> {
   final TextEditingController _controller = TextEditingController();
-  final List<_ChatMessage> _messages = [
-    _ChatMessage(
-      sender: 'Alice',
-      text: 'Hey everyone!',
-      isMe: false,
-      time: DateTime.now().subtract(const Duration(minutes: 5)),
-      avatarUrl: 'https://randomuser.me/api/portraits/women/1.jpg',
-    ),
-    _ChatMessage(
-      sender: 'Me',
-      text: 'Hi Alice!',
-      isMe: true,
-      time: DateTime.now().subtract(const Duration(minutes: 4)),
-      avatarUrl: 'https://randomuser.me/api/portraits/men/2.jpg',
-    ),
-    _ChatMessage(
-      sender: 'Bob',
-      text: 'Hello!',
-      isMe: false,
-      time: DateTime.now().subtract(const Duration(minutes: 3)),
-      avatarUrl: 'https://randomuser.me/api/portraits/men/3.jpg',
-    ),
-    _ChatMessage(
-      sender: 'Me',
-      text: 'How are you all?',
-      isMe: true,
-      time: DateTime.now().subtract(const Duration(minutes: 2)),
-      avatarUrl: 'https://randomuser.me/api/portraits/men/2.jpg',
-    ),
-    _ChatMessage(
-      sender: 'Alice',
-      text: 'Doing great!',
-      isMe: false,
-      time: DateTime.now().subtract(const Duration(minutes: 1)),
-      avatarUrl: 'https://randomuser.me/api/portraits/women/1.jpg',
-    ),
-    _ChatMessage(
-      sender: 'Bob',
-      text: 'Same here!',
-      isMe: false,
-      time: DateTime.now().subtract(const Duration(seconds: 30)),
-      avatarUrl: 'https://randomuser.me/api/portraits/men/3.jpg',
-    ),
-  ];
+  bool _initialized = false;
+  final SocketService _socketService = SocketService();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      final bloc = context.read<GroupChatBloc>();
+      // Ensure joining the group room after socket connect
+      _socketService.joinGroupRoomAfterConnect(
+        widget.groupId,
+        widget.currentUserId,
+      );
+      bloc.add(LoadGroupChatMessages(widget.groupId));
+      bloc.add(const SubscribeToRealtimeMessages());
+      _initialized = true;
+    }
+  }
 
   void _sendMessage() {
     final text = _controller.text.trim();
     if (text.isNotEmpty) {
-      setState(() {
-        _messages.add(
-          _ChatMessage(
-            sender: 'Me',
-            text: text,
-            isMe: true,
-            time: DateTime.now(),
-            avatarUrl: 'https://randomuser.me/api/portraits/men/2.jpg',
-          ),
-        );
-        _controller.clear();
-      });
+      context.read<GroupChatBloc>().add(
+        SendGroupMessageApi(groupId: widget.groupId, messageContent: text),
+      );
+      context.read<GroupChatBloc>().add(
+        SendGroupMessageRealtime(
+          groupId: widget.groupId,
+          userId: widget.currentUserId,
+          messageContent: text,
+        ),
+      );
+      _controller.clear();
     }
   }
 
@@ -114,22 +93,109 @@ class _GroupChatPageState extends State<GroupChatPage> {
         ),
         backgroundColor: SkillWaveAppColors.primary,
         elevation: 1,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.video_call),
+            tooltip: 'Start Video Call',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => GroupVideoCallPage(
+                    groupId: widget.groupId,
+                    groupName: widget.groupName,
+                    currentUserId: widget.currentUserId,
+                    currentUserName: widget.currentUserName,
+                    currentUserAvatarUrl: widget.currentUserAvatarUrl,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       backgroundColor: const Color(0xFFE9EBEE),
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              reverse: true,
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final msg = _messages[_messages.length - 1 - index];
-                return _ChatBubble(msg: msg);
+            child: BlocBuilder<GroupChatBloc, GroupChatState>(
+              builder: (context, state) {
+                print('[UI] Bloc state: $state');
+                if (state is GroupChatLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is GroupChatLoaded) {
+                  final messages = state.messages;
+                  return ListView.builder(
+                    reverse: true,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 8,
+                    ),
+                    itemCount: messages.length,
+                    itemBuilder: (context, index) {
+                      final msg = messages[messages.length - 1 - index];
+                      return _ChatBubble(
+                        msg: msg,
+                        isMe: msg.sender.id == widget.currentUserId,
+                        currentUserAvatarUrl: widget.currentUserAvatarUrl,
+                      );
+                    },
+                  );
+                } else if (state is GroupChatTypingState) {
+                  final messages = state.messages;
+                  print(
+                    '[UI] Typing indicator should show for userId: ${state.typingUserId}',
+                  );
+                  // Always show 'Someone is typing...' if not the current user
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          reverse: true,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 8,
+                          ),
+                          itemCount: messages.length,
+                          itemBuilder: (context, index) {
+                            final msg = messages[messages.length - 1 - index];
+                            return _ChatBubble(
+                              msg: msg,
+                              isMe: msg.sender.id == widget.currentUserId,
+                              currentUserAvatarUrl: widget.currentUserAvatarUrl,
+                            );
+                          },
+                        ),
+                      ),
+                      if (state.typingUserId != widget.currentUserId)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 16,
+                            bottom: 10,
+                            right: 80,
+                          ),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: _BeautifulTypingIndicator(),
+                          ),
+                        ),
+                    ],
+                  );
+                } else if (state is GroupChatError) {
+                  return Center(child: Text('Error: \\${state.message}'));
+                } else {
+                  return const SizedBox.shrink();
+                }
               },
             ),
           ),
-          _ChatInputBar(controller: _controller, onSend: _sendMessage),
+          _ChatInputBar(
+            controller: _controller,
+            onSend: _sendMessage,
+            onTyping: () {
+              print('[UI] User is typing...');
+              _socketService.sendTyping(widget.groupId);
+            },
+          ),
         ],
       ),
     );
@@ -137,39 +203,47 @@ class _GroupChatPageState extends State<GroupChatPage> {
 }
 
 class _ChatBubble extends StatelessWidget {
-  final _ChatMessage msg;
-  const _ChatBubble({required this.msg});
+  final GroupMessageEntity msg;
+  final bool isMe;
+  final String currentUserAvatarUrl;
+  const _ChatBubble({
+    required this.msg,
+    required this.isMe,
+    required this.currentUserAvatarUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final timeStr = DateFormat('h:mm a').format(msg.time);
+    final timeStr = DateFormat('h:mm a').format(msg.sentAt);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
       child: Row(
-        mainAxisAlignment: msg.isMe
+        mainAxisAlignment: isMe
             ? MainAxisAlignment.end
             : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (!msg.isMe)
+          if (!isMe)
             Padding(
               padding: const EdgeInsets.only(right: 6),
               child: CircleAvatar(
                 radius: 16,
-                backgroundImage: NetworkImage(msg.avatarUrl),
+                backgroundImage: CachedNetworkImageProvider(
+                  "${ApiEndpoints.baseUrlForImage}/profile/${msg.sender.profilePicture}",
+                ),
               ),
             ),
           Flexible(
             child: Column(
-              crossAxisAlignment: msg.isMe
+              crossAxisAlignment: isMe
                   ? CrossAxisAlignment.end
                   : CrossAxisAlignment.start,
               children: [
-                if (!msg.isMe)
+                if (!isMe)
                   Padding(
                     padding: const EdgeInsets.only(left: 2, bottom: 2),
                     child: Text(
-                      msg.sender,
+                      msg.sender.name,
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey[700],
@@ -183,12 +257,12 @@ class _ChatBubble extends StatelessWidget {
                     horizontal: 16,
                   ),
                   decoration: BoxDecoration(
-                    color: msg.isMe ? SkillWaveAppColors.primary : Colors.white,
+                    color: isMe ? SkillWaveAppColors.primary : Colors.white,
                     borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(18),
                       topRight: const Radius.circular(18),
-                      bottomLeft: Radius.circular(msg.isMe ? 18 : 4),
-                      bottomRight: Radius.circular(msg.isMe ? 4 : 18),
+                      bottomLeft: Radius.circular(isMe ? 18 : 4),
+                      bottomRight: Radius.circular(isMe ? 4 : 18),
                     ),
                     boxShadow: [
                       BoxShadow(
@@ -199,9 +273,9 @@ class _ChatBubble extends StatelessWidget {
                     ],
                   ),
                   child: Text(
-                    msg.text,
+                    msg.messageContent,
                     style: TextStyle(
-                      color: msg.isMe ? Colors.white : Colors.black87,
+                      color: isMe ? Colors.white : Colors.black87,
                       fontSize: 16,
                     ),
                   ),
@@ -216,12 +290,14 @@ class _ChatBubble extends StatelessWidget {
               ],
             ),
           ),
-          if (msg.isMe)
+          if (isMe)
             Padding(
               padding: const EdgeInsets.only(left: 6),
               child: CircleAvatar(
                 radius: 16,
-                backgroundImage: NetworkImage(msg.avatarUrl),
+                backgroundImage: CachedNetworkImageProvider(
+                  "${ApiEndpoints.baseUrlForImage}/profile/${msg.sender.profilePicture}",
+                ),
               ),
             ),
         ],
@@ -233,7 +309,12 @@ class _ChatBubble extends StatelessWidget {
 class _ChatInputBar extends StatefulWidget {
   final TextEditingController controller;
   final VoidCallback onSend;
-  const _ChatInputBar({required this.controller, required this.onSend});
+  final VoidCallback? onTyping;
+  const _ChatInputBar({
+    required this.controller,
+    required this.onSend,
+    this.onTyping,
+  });
 
   @override
   State<_ChatInputBar> createState() => _ChatInputBarState();
@@ -323,10 +404,12 @@ class _ChatInputBarState extends State<_ChatInputBar> {
                             ),
                           ),
                           cursorColor: SkillWaveAppColors.primary,
+                          onChanged: (_) {
+                            if (widget.onTyping != null) widget.onTyping!();
+                          },
                         ),
                       ),
                     ),
-                
                   ],
                 ),
               ),
@@ -365,6 +448,86 @@ class _ChatInputBarState extends State<_ChatInputBar> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _BeautifulTypingIndicator extends StatelessWidget {
+  const _BeautifulTypingIndicator();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: SkillWaveAppColors.primary.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: SkillWaveAppColors.primary.withOpacity(0.2)),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.chat_bubble_outline,
+            color: SkillWaveAppColors.primary,
+            size: 20,
+          ),
+          const SizedBox(width: 8),
+          const Text(
+            'Someone is typing...',
+            style: TextStyle(
+              color: SkillWaveAppColors.primary,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(width: 8),
+          const AnimatedEllipsis(),
+        ],
+      ),
+    );
+  }
+}
+
+class AnimatedEllipsis extends StatefulWidget {
+  const AnimatedEllipsis({Key? key}) : super(key: key);
+
+  @override
+  State<AnimatedEllipsis> createState() => _AnimatedEllipsisState();
+}
+
+class _AnimatedEllipsisState extends State<AnimatedEllipsis>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    _controller.repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Opacity(opacity: _animation.value, child: child);
+      },
+      child: const Text('.'),
     );
   }
 }
