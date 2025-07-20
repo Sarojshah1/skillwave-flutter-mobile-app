@@ -47,5 +47,9 @@
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
 	<string>We use Face ID to protect your data.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera access is required for video calls.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone access is required for video calls.</string>
 </dict>
 </plist>
