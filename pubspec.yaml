@@ -109,6 +109,7 @@ dependencies:
   local_auth: ^2.3.0
   socket_io_client: ^2.0.3+1
   test_cov_console: 
+  flutter_webrtc: ^0.14.2
 
 dev_dependencies:
   flutter_test:
