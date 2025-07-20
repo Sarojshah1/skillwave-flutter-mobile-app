@@ -13,13 +13,15 @@ import 'package:skillwave/features/study_groups/presentation/view/group_chat_pag
 
 @RoutePage(name: 'MyStudyGroupsRoute')
 class MyStudyGroupsPage extends StatefulWidget {
-  const MyStudyGroupsPage({Key? key}) : super(key: key);
+   
+  const MyStudyGroupsPage();
 
   @override
   State<MyStudyGroupsPage> createState() => _MyStudyGroupsPageState();
 }
 
 class _MyStudyGroupsPageState extends State<MyStudyGroupsPage> {
+  final UserSharedPrefs _userSharedPrefs = getIt<UserSharedPrefs>();
   final ScrollController _scrollController = ScrollController();
   String? _userId;
 
@@ -87,11 +89,19 @@ class _MyStudyGroupsPageState extends State<MyStudyGroupsPage> {
                     final group = state.groups[index];
                     return MessengerGroupCard(
                       group: group,
-                      onTap: () {
+                      onTap: () async{
+                        final userid = await _userSharedPrefs.getUserId();
+                         userid.fold((l) => null, (r) => r);
+                        
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) =>
-                                GroupChatPage(groupName: group.groupName),
+                            builder: (_) => GroupChatPage(
+                              groupId: group.id,
+                              groupName: group.groupName,
+                              currentUserId: userid.fold((l) => '', (r) => r ?? ''),
+                              currentUserName: '', 
+                              currentUserAvatarUrl: '',
+                            ),
                           ),
                         );
                       },
