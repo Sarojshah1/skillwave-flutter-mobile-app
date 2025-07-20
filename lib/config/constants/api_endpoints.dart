@@ -75,4 +75,10 @@ class ApiEndpoints {
   static String getUserGroupsUrl() {
     return "$baseUrl/groupstudy/user";
   }
+
+  //   chat API's (matches backend)
+  static const String sendChatMessage = "$baseUrl/chats";
+  static String getChatMessagesByContext(String contextId) {
+    return "$baseUrl/chats/$contextId";
+  }
 }
