@@ -3,6 +3,8 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:logger/logger.dart';
 import 'package:skillwave/cores/shared_prefs/user_shared_prefs.dart';
 import 'package:skillwave/config/di/di.container.dart';
+import 'package:skillwave/features/study_groups/data/model/group_message_model.dart';
+import 'package:skillwave/features/study_groups/domain/entity/group_message_entity.dart';
 
 class SocketService {
   static final SocketService _instance = SocketService._internal();
@@ -20,8 +22,6 @@ class SocketService {
   final StreamController<Map<String, dynamic>> _newReplyController =
       StreamController<Map<String, dynamic>>.broadcast();
   final StreamController<Map<String, dynamic>> _newMessageController =
-      StreamController<Map<String, dynamic>>.broadcast();
-  final StreamController<Map<String, dynamic>> _newGroupMessageController =
       StreamController<Map<String, dynamic>>.broadcast();
   final StreamController<Map<String, dynamic>> _newDirectMessageController =
       StreamController<Map<String, dynamic>>.broadcast();
@@ -72,8 +72,9 @@ class SocketService {
   Stream<Map<String, dynamic>> get newReplyStream => _newReplyController.stream;
   Stream<Map<String, dynamic>> get newMessageStream =>
       _newMessageController.stream;
-  Stream<Map<String, dynamic>> get newGroupMessageStream =>
-      _newGroupMessageController.stream;
+  Stream<GroupMessageEntity> get newGroupMessageStream => _newMessageController
+      .stream
+      .map((json) => GroupMessageModel.fromSocket(json).toEntity());
   Stream<Map<String, dynamic>> get newDirectMessageStream =>
       _newDirectMessageController.stream;
   Stream<Map<String, dynamic>> get userJoinedStream =>
@@ -112,6 +113,38 @@ class SocketService {
       _pushTokenErrorController.stream;
   Stream<Map<String, dynamic>> get messageSentStream =>
       _messageSentController.stream;
+
+  // Typing indicator userId streams
+  Stream<String> get userTypingUserIdStream => _userTypingController.stream
+      .where((data) {
+        final isValid =
+            data is Map<String, dynamic> && data['userId'] is String;
+        if (!isValid)
+          print('[SocketService] userTypingUserIdStream ignored: $data');
+        return isValid;
+      })
+      .map((data) {
+        print(
+          '[SocketService] userTypingUserIdStream userId: ${data['userId']}',
+        );
+        return data['userId'] as String;
+      });
+
+  Stream<String>
+  get userStoppedTypingUserIdStream => _userStoppedTypingController.stream
+      .where((data) {
+        final isValid =
+            data is Map<String, dynamic> && data['userId'] is String;
+        if (!isValid)
+          print('[SocketService] userStoppedTypingUserIdStream ignored: $data');
+        return isValid;
+      })
+      .map((data) {
+        print(
+          '[SocketService] userStoppedTypingUserIdStream userId: ${data['userId']}',
+        );
+        return data['userId'] as String;
+      });
 
   bool get isConnected => _isConnected;
 
@@ -216,24 +249,36 @@ class SocketService {
       _newMessageController.add(data);
     });
 
-    _socket!.on('newGroupMessage', (data) {
-      _logger.i('💬 New group message: $data');
-      _newGroupMessageController.add(data);
-    });
-
     _socket!.on('newDirectMessage', (data) {
       _logger.i('💬 New direct message: $data');
       _newDirectMessageController.add(data);
     });
 
+    // Typing indicator events (handle both String and Map)
     _socket!.on('userTyping', (data) {
       _logger.i('⌨️ User typing: $data');
-      _userTypingController.add(data);
+      if (data is String) {
+        _userTypingController.add({'userId': data});
+      } else if (data is Map<String, dynamic>) {
+        _userTypingController.add(data);
+      }
     });
-
     _socket!.on('userStoppedTyping', (data) {
       _logger.i('⌨️ User stopped typing: $data');
-      _userStoppedTypingController.add(data);
+      if (data is String) {
+        _userStoppedTypingController.add({'userId': data});
+      } else if (data is Map<String, dynamic>) {
+        _userStoppedTypingController.add(data);
+      }
+    });
+
+    _socket!.on('typing', (data) {
+      // legacy, ignore or log
+      _logger.i('Received legacy typing event: $data');
+    });
+    _socket!.on('stopTyping', (data) {
+      // legacy, ignore or log
+      _logger.i('Received legacy stopTyping event: $data');
     });
 
     // Call events
@@ -402,6 +447,22 @@ class SocketService {
       }
     } else {
       _logger.w('⚠️ Cannot get room participants: Socket not connected');
+    }
+  }
+
+  // Join a group room after socket connection
+  void joinGroupRoomAfterConnect(String groupId, String userId) {
+    if (_socket == null) return;
+    _socket!.onConnect((_) {
+      print('Socket connected, joining room: groupId=$groupId, userId=$userId');
+      joinRoom(groupId, userId);
+    });
+    // If already connected, join immediately
+    if (_isConnected) {
+      print(
+        'Socket already connected, joining room: groupId=$groupId, userId=$userId',
+      );
+      joinRoom(groupId, userId);
     }
   }
 
@@ -624,34 +685,26 @@ class SocketService {
   }
 
   // Send typing indicator
-  Future<void> sendTyping(String contextId, String userId) async {
-    if (_socket != null && _isConnected) {
-      try {
-        _socket!.emit('typing', [contextId, userId]);
-        _logger.i('Sent typing indicator');
-      } catch (e) {
-        _logger.e('Error sending typing indicator: $e');
-      }
-    } else {
-      _logger.w('⚠️ Cannot send typing indicator: Socket not connected');
+  Future<void> sendTyping(String groupId) async {
+    final userIdEither = await _userPrefs.getUserId();
+    final userId = userIdEither.fold(
+      (failure) => null, // or handle error/log
+      (id) => id,
+    );
+    if (userId == null) return;
+    print(
+      '[SocketService] Emitting typing event: groupId=$groupId, userId=$userId',
+    );
+    if (_socket != null) {
+      _socket!.emit('typing', [groupId, userId]); // two separate arguments
     }
   }
 
   // Stop typing indicator
-  Future<void> stopTyping(String contextId, String userId) async {
-    if (_socket != null && _isConnected) {
-      try {
-        _socket!.emit('stopTyping', {
-          'context_id': contextId,
-          'userId': userId,
-        });
-        _logger.i('Stopped typing indicator');
-      } catch (e) {
-        _logger.e('Error stopping typing indicator: $e');
-      }
-    } else {
-      _logger.w('⚠️ Cannot stop typing indicator: Socket not connected');
-    }
+  Future<void> stopTyping(String groupId) async {
+    final userId = await _userPrefs.getUserId();
+    if (userId == null) return;
+    _socket?.emit('stopTyping', {'context_id': groupId, 'userId': userId});
   }
 
   // ========== CALL EVENTS ==========
@@ -835,7 +888,6 @@ class SocketService {
     _newCommentController.close();
     _newReplyController.close();
     _newMessageController.close();
-    _newGroupMessageController.close();
     _newDirectMessageController.close();
     _userJoinedController.close();
     _userLeftController.close();
