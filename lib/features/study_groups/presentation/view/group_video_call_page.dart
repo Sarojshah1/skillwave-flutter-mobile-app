@@ -8,6 +8,7 @@ class GroupVideoCallPage extends StatefulWidget {
   final String currentUserId;
   final String currentUserName;
   final String currentUserAvatarUrl;
+
   const GroupVideoCallPage({
     Key? key,
     required this.groupId,
@@ -28,7 +29,6 @@ class _GroupVideoCallPageState extends State<GroupVideoCallPage> {
   MediaStream? _localStream;
   bool _micOn = true;
   bool _videoOn = true;
-  bool _inCall = true;
   late SocketService _socketService;
 
   @override
@@ -48,14 +48,13 @@ class _GroupVideoCallPageState extends State<GroupVideoCallPage> {
   Future<void> _startLocalStream() async {
     final mediaConstraints = {
       'audio': true,
-      'video': {'facingMode': 'user', 'width': 640, 'height': 480},
+      'video': {'facingMode': 'user', 'width': 720, 'height': 1280},
     };
     _localStream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
     _localRenderer.srcObject = _localStream;
   }
 
   void _joinRoom() {
-    // Ensure socket is connected and join the group room
     _socketService.joinGroupRoomAfterConnect(
       widget.groupId,
       widget.currentUserId,
@@ -63,7 +62,6 @@ class _GroupVideoCallPageState extends State<GroupVideoCallPage> {
   }
 
   void _setupSignaling() {
-    // Listen for offers
     _socketService.offerStream.listen((data) async {
       final fromUserId = data['userId'];
       if (fromUserId == widget.currentUserId) return;
@@ -71,21 +69,21 @@ class _GroupVideoCallPageState extends State<GroupVideoCallPage> {
       final senderSocketId = data['socketId'];
       await _handleOffer(offer, fromUserId, senderSocketId);
     });
-    // Listen for answers
+
     _socketService.answerStream.listen((data) async {
       final fromUserId = data['userId'];
       if (fromUserId == widget.currentUserId) return;
       final answer = data['answer'];
       await _handleAnswer(answer, fromUserId);
     });
-    // Listen for ICE candidates
+
     _socketService.iceCandidateStream.listen((data) async {
       final fromUserId = data['userId'];
       if (fromUserId == widget.currentUserId) return;
       final candidate = data['candidate'];
       await _handleIceCandidate(candidate, fromUserId);
     });
-    // Listen for new participants (userJoined)
+
     _socketService.userJoinedStream.listen((data) async {
       final userId = data['userId'];
       final socketId = data['socketId'];
@@ -104,44 +102,33 @@ class _GroupVideoCallPageState extends State<GroupVideoCallPage> {
     _localStream?.getTracks().forEach((track) {
       pc.addTrack(track, _localStream!);
     });
+
     pc.onTrack = (event) {
-      debugPrint(
-        '[WebRTC] onTrack for $remoteUserId: kind=${event.track.kind}, streams=${event.streams.length}',
-      );
       if (event.track.kind == 'video') {
         if (!_remoteRenderers.containsKey(remoteUserId)) {
           final renderer = RTCVideoRenderer();
-          renderer
-              .initialize()
-              .then((_) {
-                renderer.srcObject = event.streams.isNotEmpty
-                    ? event.streams[0]
-                    : null;
-                setState(() {
-                  _remoteRenderers[remoteUserId] = renderer;
-                });
-                debugPrint(
-                  '[WebRTC] Remote renderer initialized for $remoteUserId',
-                );
-              })
-              .catchError((e) {
-                debugPrint('[WebRTC] Error initializing remote renderer: $e');
-              });
+          renderer.initialize().then((_) {
+            renderer.srcObject = event.streams.isNotEmpty ? event.streams[0] : null;
+            setState(() {
+              _remoteRenderers[remoteUserId] = renderer;
+            });
+          });
         } else {
-          _remoteRenderers[remoteUserId]?.srcObject = event.streams.isNotEmpty
-              ? event.streams[0]
-              : null;
+          _remoteRenderers[remoteUserId]?.srcObject =
+          event.streams.isNotEmpty ? event.streams[0] : null;
         }
       }
     };
+
     pc.onIceCandidate = (candidate) {
       _socketService.sendIceCandidate(
         {'candidate': candidate.toMap()},
         widget.groupId,
         widget.currentUserId,
-        targetSocketId: null, // For group, broadcast
+        targetSocketId: null,
       );
     };
+
     _peerConnections[remoteUserId] = pc;
     return pc;
   }
@@ -159,10 +146,7 @@ class _GroupVideoCallPageState extends State<GroupVideoCallPage> {
   }
 
   Future<void> _handleOffer(
-    dynamic offer,
-    String remoteUserId,
-    String? senderSocketId,
-  ) async {
+      dynamic offer, String remoteUserId, String? senderSocketId) async {
     final pc = await _createPeerConnection(remoteUserId);
     await pc.setRemoteDescription(
       RTCSessionDescription(offer['sdp'], offer['type']),
@@ -186,10 +170,7 @@ class _GroupVideoCallPageState extends State<GroupVideoCallPage> {
     }
   }
 
-  Future<void> _handleIceCandidate(
-    dynamic candidate,
-    String remoteUserId,
-  ) async {
+  Future<void> _handleIceCandidate(dynamic candidate, String remoteUserId) async {
     final pc = _peerConnections[remoteUserId];
     if (pc != null && candidate != null) {
       await pc.addCandidate(
@@ -214,83 +195,66 @@ class _GroupVideoCallPageState extends State<GroupVideoCallPage> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final allTiles = <Widget>[
-      _buildVideoTile(_localRenderer, widget.currentUserName, isMe: true),
-      ..._remoteRenderers.entries.map(
-        (entry) => _buildVideoTile(entry.value, entry.key),
+  Widget _buildControlsBar() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.75),
+        borderRadius: BorderRadius.circular(32),
       ),
-    ];
-    while (allTiles.length < 4) {
-      allTiles.add(_buildPlaceholderTile());
-    }
-    if (_remoteRenderers.isEmpty) {
-      allTiles[1] = Center(
-        child: Text(
-          'Waiting for others to join...',
-          style: TextStyle(color: Colors.grey),
-        ),
-      );
-    }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('${widget.groupName} Video Call'),
-        backgroundColor: Colors.blue.shade700,
-      ),
-      backgroundColor: Colors.grey[200],
-      body: Column(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Expanded(
-            child: GridView.count(crossAxisCount: 2, children: allTiles),
-          ),
-          _buildControls(),
+          _buildIconButton(_micOn ? Icons.mic : Icons.mic_off, () => setState(() => _micOn = !_micOn)),
+          const SizedBox(width: 16),
+          _buildIconButton(_videoOn ? Icons.videocam : Icons.videocam_off, () => setState(() => _videoOn = !_videoOn)),
+          const SizedBox(width: 16),
+          _buildIconButton(Icons.screen_share, () {}),
+          const SizedBox(width: 16),
+          _buildIconButton(Icons.call_end, () => Navigator.pop(context), color: Colors.red),
         ],
       ),
     );
   }
 
-  Widget _buildVideoTile(
-    RTCVideoRenderer renderer,
-    String name, {
-    bool isMe = false,
-  }) {
+  Widget _buildIconButton(IconData icon, VoidCallback onTap, {Color color = Colors.white}) {
+    return CircleAvatar(
+      radius: 26,
+      backgroundColor: Colors.grey.shade900,
+      child: IconButton(
+        icon: Icon(icon, color: color, size: 28),
+        onPressed: onTap,
+      ),
+    );
+  }
+
+  Widget _buildVideoTile(RTCVideoRenderer renderer, String label, {bool isLocal = false}) {
     return Container(
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: Colors.black,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(0, 2)),
-        ],
+        color: Colors.black87,
       ),
       child: Stack(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: RTCVideoView(renderer, mirror: isMe),
+            child: RTCVideoView(renderer, mirror: isLocal, objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover),
           ),
           Positioned(
-            left: 8,
             bottom: 8,
+            left: 8,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 color: Colors.black54,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
                 children: [
-                  Icon(
-                    isMe ? Icons.person : Icons.people,
-                    color: Colors.white,
-                    size: 16,
-                  ),
+                  Icon(Icons.person, color: Colors.white, size: 14),
                   const SizedBox(width: 4),
-                  Text(
-                    isMe ? 'You' : name,
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
-                  ),
+                  Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
                 ],
               ),
             ),
@@ -300,55 +264,40 @@ class _GroupVideoCallPageState extends State<GroupVideoCallPage> {
     );
   }
 
-  Widget _buildPlaceholderTile() {
-    return Container(
-      margin: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.grey[400],
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: const Center(
-        child: Icon(Icons.person_outline, size: 48, color: Colors.white70),
-      ),
-    );
-  }
+  @override
+  Widget build(BuildContext context) {
+    final allTiles = <Widget>[
+      _buildVideoTile(_localRenderer, widget.currentUserName, isLocal: true),
+      ..._remoteRenderers.entries.map((e) => _buildVideoTile(e.value, e.key)),
+    ];
 
-  Widget _buildControls() {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
         children: [
-          IconButton(
-            icon: Icon(_micOn ? Icons.mic : Icons.mic_off, color: Colors.blue),
-            onPressed: () {
-              setState(() => _micOn = !_micOn);
-              // TODO: Mute/unmute local audio track
-            },
+          GridView.count(
+            crossAxisCount: allTiles.length <= 2 ? 1 : 2,
+            children: allTiles,
           ),
-          IconButton(
-            icon: Icon(
-              _videoOn ? Icons.videocam : Icons.videocam_off,
-              color: Colors.blue,
+          Positioned(
+            top: 40,
+            left: 16,
+            right: 16,
+            child: Row(
+              children: [
+                CircleAvatar(backgroundImage: NetworkImage(widget.currentUserAvatarUrl)),
+                const SizedBox(width: 12),
+                Text(widget.groupName, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600)),
+                const Spacer(),
+                Text('${_remoteRenderers.length + 1} in call', style: const TextStyle(color: Colors.white70, fontSize: 14)),
+              ],
             ),
-            onPressed: () {
-              setState(() => _videoOn = !_videoOn);
-              // TODO: Enable/disable local video track
-            },
           ),
-          IconButton(
-            icon: const Icon(Icons.screen_share, color: Colors.blue),
-            onPressed: () {
-              // TODO: Implement screen sharing
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.call_end, color: Colors.red),
-            onPressed: () {
-              setState(() => _inCall = false);
-              Navigator.of(context).pop();
-            },
+          Positioned(
+            bottom: 32,
+            left: 0,
+            right: 0,
+            child: Center(child: _buildControlsBar()),
           ),
         ],
       ),
